@@ -1,0 +1,34 @@
+.mdc:before{
+  content: '|';
+}
+
+.header{
+  border-bottom: 1px solid #E5E5E5;
+  height: 60px;
+  box-sizing: border-box;
+}
+
+.navbar-expand-lg{
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
+.circle{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 15.38px;
+  color: #4F5758;
+  line-height: 20px;
+  text-align: center;
+  background: #E5E5E5;
+}
+.dropdown-default{
+  a{
+    cursor: pointer;
+  }
+}
+
+.margin-left-20 {
+  margin-left: 20px;
+}

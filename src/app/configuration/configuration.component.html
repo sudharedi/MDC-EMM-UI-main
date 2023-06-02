@@ -1,0 +1,198 @@
+<div class="">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <h4 class="subheader"> {{updateType==0? 'Global Level' : ''}} {{updateType==1? 'Group Level' : ''}} Configuration Update</h4>
+      <p class="subheader-text">Updating {{(updateType==0 || updateType==1)? totalDeviceCount : noOfDevices}} device(s)</p>
+
+      <!-- Modal body -->
+      <div class="tabSelection">
+        <div class="row align-baseline">
+          <div class="sp-portal-tabs config-tabs flex-grew-1">
+            <ul class="nav nav-pills">
+              <li><a title="Frequently changed parameters" data-toggle="pill" href="#basic" class="active padding-44">Basic</a></li>
+              <li *ngIf="userRoles?.advancedConfigurationUpdate?.allowed"><a title="Parameters changed for special cases" data-toggle="pill" href="#advanced">Advanced</a></li>              
+            </ul>
+          </div>
+        </div>
+
+        <div class="tab-content" style="overflow-y: scroll;height: 415px;">
+          <div id="basic" class="tab-pane active in">
+            <form #configurationForm="ngForm" *ngIf="configValues" name="form">
+              <div class="row config-fields">
+                <div *ngFor="let config of configValues; let i = index" class="config-container">
+
+                  <div class="" *ngIf="config.type=='text' && !config.advanceParam && config.name=='charge_seq'" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event,i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="charging-sequence-div" (change)="chargingSequenceValidation()">
+                      <div class="charging-sequence-block">
+                        <label>D1</label>
+                        <input class="charging-sequence-inputs" type=number name="chargingSequence[0]" [(ngModel)]=chargingSequence[0] [min]=0 [max]=4 [disabled]=config.disabled [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}" (ngModelChange)="chargingSequenceValidation()"/>
+                      </div>
+
+                      <div class="charging-sequence-block">
+                        <label>D2</label>
+                        <input class="charging-sequence-inputs" type=number name="chargingSequence[1]" [(ngModel)]=chargingSequence[1] [min]=0 [max]=4 [disabled]=config.disabled [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}" (ngModelChange)="chargingSequenceValidation()"/>
+                      </div>
+
+                      <div class="charging-sequence-block">
+                        <label>D3</label>
+                        <input class="charging-sequence-inputs" type=number name="chargingSequence[2]" [(ngModel)]=chargingSequence[2] [min]=0 [max]=4 [disabled]=config.disabled [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}" (ngModelChange)="chargingSequenceValidation()"/>
+                      </div>
+
+                      <div class="charging-sequence-block">
+                        <label>D4</label>
+                        <input class="charging-sequence-inputs" type=number name="chargingSequence[3]" [(ngModel)]=chargingSequence[3] [min]=0 [max]=4 [disabled]=config.disabled [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}" (ngModelChange)="chargingSequenceValidation()"/>
+                      </div>
+                    </div>
+                    <span class="ms charging-sequence-error" *ngIf="chargingSequenceDuplicates">No Dupliactes</span>
+                    <span class="ms charging-sequence-error" *ngIf="chargingSequenceRangeError">Range Exceeded</span>
+
+                  </div>
+
+                  <div class="" *ngIf="config.type=='number' && !config.advanceParam" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event, i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="input-section" [ngStyle]="config.disabled ?{'pointer-events':'none'} : {'pointer-events':'auto'}">
+                      <input
+                        *ngIf="config.name!=='device_reboot_frequency' 
+                              && config.name!=='device_time_zone'"
+                        type=number class="congig-inputs" [name]=config.name [(ngModel)]="config.intValue" required [min]=config.minimum
+                        [max]=config.maximum [disabled]="config.disabled"
+                        [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}"
+                        (ngModelChange)="checkValidation(config.intValue, i)" />
+                      
+                    <div *ngIf="config.name==='device_reboot_frequency'">
+                      <select class="day-fields" [name]=config.name (change)="selectDay($event.target.value)" [(ngModel)]="config.intValue">
+                        <option value="1" selected>Sunday</option>
+                        <option value="2"> Monday </option>
+                        <option value="3">Tuesday</option>
+                        <option value="4">Wednesday</option>
+                        <option value="5">Thursday</option>
+                        <option value="6">Friday</option>
+                        <option value="7">Saturday</option>
+                        <option value="0">Everyday</option>
+                      </select>
+                    </div>
+                    <div *ngIf="config.name==='device_time_zone'">
+                      <!-- <select class="day-fields" id="timeZoneData" [name]=config.name (change)="selectTimezone($event)" [(ngModel)]="config.timeZoneInte">
+                        <option *ngFor="let tz of timezones" [value]="tz.offset">{{tz.label}}</option>
+                      </select> -->
+                      
+                      <select class="day-fields" [name]=config.name (change)="selectTimezone($event)" [(ngModel)]="config.timeZoneInte">
+
+                        <option *ngFor="let tz of arr" [value]="tz.value">{{tz.value}}</option>
+  
+                      </select>
+                    </div>
+                    <span class="ms" *ngIf="config.name!=='device_time_zone'">{{config.unit}}</span>
+                    <label *ngIf="config.name != 'device_reboot_frequency' && config.name != 'device_time_zone'" class="congig-inputs-range">Range: {{config.minimum}}-{{config.maximum}}</label>
+                    <span class="ms error-message" *ngIf="(config.intValue>config.maximum || config.intValue<config.minimum) && config.intValue !== null ">Range Exceeded</span>
+                    <span class="ms error-message" *ngIf="config.intValue === null">Invalid value</span>
+                    </div>
+                  </div>
+
+                  <div class="" *ngIf="config.type=='time' && !config.advanceParam" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event,i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="input-section" *ngIf="config.name==='device_reboot_schedule_start'" [ngStyle]="config.disabled ?{'pointer-events':'none'} : {'pointer-events':'auto'}">
+                      <input class="congig-inputs" type="time" [value]="iniTimeStart" name="device_reboot_schedule_start" (change)="changeTime($event)"
+                        [(ngModel)]="iniTimeStart" [ngModelOptions]="{standalone: true}" required [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}" />
+                        <span class="ms">{{config.unit}}</span>
+                        <label class="congig-inputs-range">Range: {{config.minimum}}-{{config.maximum}}</label>
+                        <span class="ms error-message" *ngIf="(config.intValue>config.maximum || config.intValue<config.minimum) && config.intValue !== null ">Range Exceeded</span>
+                        <span class="ms error-message" *ngIf="config.intValue === null">Invalid value</span>
+                        <span class="ms error-message" *ngIf="config.intValue === null">Should less than end time</span>
+                    </div>
+                    <div class="input-section" *ngIf="config.name==='device_reboot_schedule_end'" [ngStyle]="config.disabled ?{'pointer-events':'none'} : {'pointer-events':'auto'}">
+                      <input class="congig-inputs" type="time" [value]="iniTimeEnd" name="device_reboot_schedule_end" (change)="changeTime($event)"
+                        [(ngModel)]="iniTimeEnd" [ngModelOptions]="{standalone: true}" required [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}"/>
+                        <span class="ms">{{config.unit}}</span>
+                        <label class="congig-inputs-range">Range: {{config.minimum}}-{{config.maximum}}</label>
+                        <span class="ms error-message" *ngIf="(config.intValue>config.maximum || config.intValue<config.minimum) && config.intValue !== null ">Range Exceeded</span>
+                        <span class="ms error-message" *ngIf="config.intValue === null">Invalid value</span>
+                        <span class="ms error-message" *ngIf="config.intValue === null">Should more than start time</span>
+                    </div>
+                  </div>  
+
+                  <div class="" *ngIf="config.type=='boolean' && !config.advanceParam" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event,i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="input-section" [ngStyle]="config.disabled ?{'pointer-events':'none'} : {'pointer-events':'auto'}">
+                      <input type="radio" class="congig-inputs-radio" name="boolValue" [(ngModel)]="config.boolValue" #boolValue="ngModel" [value]="true" required  /> Yes
+                      <input type="radio" class="congig-inputs-radio" name="boolValue" [(ngModel)]="config.boolValue" #boolValue="ngModel" [value]="false" required /> No
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+
+          <div id="advanced" class="tab-pane fade">
+            <form #configurationForm="ngForm" *ngIf="configValues" name="form" style="margin-top: -13%;">
+              <div class="row config-fields">
+                <div *ngFor="let config of configValues; let i = index" style="width: 50%;float: right;margin-top: 20px;">
+                  <div class="" *ngIf="(config.type=='text' || config.type=='string') && config.advanceParam" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event,i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="input-section">
+                      <input class="congig-inputs" type="config.type" name="strValue" [(ngModel)]="config.strValue"  #strValue="ngModel" required [disabled]="config.disabled" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}"/>
+                      <span class="ms mb-5">{{config.unit}}</span>
+                    </div>
+
+                  </div>
+
+                  <div class="" *ngIf="config.type=='number' && config.advanceParam" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event, i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="input-section" [ngStyle]="config.disabled ?{'pointer-events':'none'} : {'pointer-events':'auto'}">
+                      <input type=number class="congig-inputs" [name]=config.name  [(ngModel)]="config.intValue" required [min]=config.minimum [max]=config.maximum [disabled]="config.disabled" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}" (ngModelChange)="checkValidation(config.intValue, i)"/>
+                      <span class="ms" *ngIf="config.unit">{{config.unit}}</span>
+                      <label class="congig-inputs-range">Range: {{config.minimum}}-{{config.maximum}}</label>
+                      <span class="ms error-message" *ngIf="(config.intValue>config.maximum || config.intValue<config.minimum) && config.intValue !== null ">Range Exceeded</span>
+                      <span class="ms error-message" *ngIf="config.intValue === null">Invalid Value</span>
+                    </div>
+                  </div>
+
+                  <div class="" *ngIf="config.type=='boolean' && config.advanceParam" [ngStyle]="config.disabled ?{'color':'#A7ABAB'} : {'color': 'black'}">
+                    <div class="checkbox-selection">
+                      <input type="checkbox" name="{{config.name}}" (click)="selectedConfigFileds($event,i)">
+                      <label class="config-labels">{{config.displayName}}</label>
+                    </div>
+                    <div class="input-section" [ngStyle]="config.disabled ?{'pointer-events':'none'} : {'pointer-events':'auto'}">
+                      <input type="radio" class="congig-inputs-radio" name="boolValue" [(ngModel)]="config.boolValue" #boolValue="ngModel" [value]="true" required  /> Yes
+                      <input type="radio" class="congig-inputs-radio" name="boolValue" [(ngModel)]="config.boolValue" #boolValue="ngModel" [value]="false" required /> No
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer justify-start">
+          <button type="button" class="btn btn-custom marginright-20 btn-secondary change-btn"
+            (click)="onSubmit(configValues)" [disabled]="disableSubmit || chargingSequenceDuplicates || chargingSequenceRangeError">Change</button>
+          <button type="button" class="btn btn-custom btn-main" (click)="cancel()">Cancel</button>  
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

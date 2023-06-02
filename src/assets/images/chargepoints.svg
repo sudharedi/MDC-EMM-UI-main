@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 63.1 (101010) - https://sketch.com -->
+    <title>719E06CB-6148-49E0-BBF9-67E9EBEEB4B1</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <path d="M29.9373231,21.680612 C25.5190451,21.680612 21.9373231,25.262334 21.9373231,29.680612 C21.9373231,34.09889 25.5190451,37.680612 29.9373231,37.680612 C34.3556011,37.680612 37.9373231,34.09889 37.9373231,29.680612 C37.9323632,25.2643901 34.353545,21.6855719 29.9373231,21.680612 Z" id="path-1"></path>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="16" height="16" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Dashboard-All-Devices" transform="translate(0.000000, -126.000000)">
+            <g id="menu" transform="translate(0.000000, 61.000000)">
+                <g id="CP">
+                    <g transform="translate(0.000000, 65.000000)">
+                        <g id="chargepoints">
+                            <g>
+                                <rect id="Rectangle" fill-opacity="0.01" fill="#4F5758" x="0" y="0" width="60" height="60"></rect>
+                                <path d="M29.9994384,20.4999997 C27.3766474,20.5 25.0016474,21.5633237 23.2824856,23.2824856 C21.5633237,25.0016474 20.5,27.3766474 20.5,30 C20.5,32.6233526 21.5633237,34.9983526 23.2824856,36.7175144 C25.0016474,38.4366763 27.3766474,39.5 30,39.5 C32.6233526,39.5 34.9983526,38.4366763 36.7175144,36.7175144 C38.4366763,34.9983526 39.5,32.6233526 39.5,30 C39.4970552,27.3782747 38.4330582,25.0046068 36.7142257,23.2857743 C34.9953932,21.5669418 32.6217253,20.5029448 29.9994384,20.4999997 Z" id="Path" stroke="#FFFFFF" fill-rule="nonzero"></path>
+                                <use id="Path" stroke="#FFFFFF" mask="url(#mask-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24.66666666666666" fill-rule="nonzero" transform="translate(29.937323, 29.680612) rotate(100.000000) translate(-29.937323, -29.680612) " xlink:href="#path-1"></use>
+                                <circle id="Oval" fill="#FFFFFF" cx="30" cy="30" r="1.33333333"></circle>
+                                <rect id="Rectangle" fill="#FFFFFF" transform="translate(28.000000, 28.333333) rotate(-50.000000) translate(-28.000000, -28.333333) " x="27.3333333" y="25.3333333" width="1.33333333" height="6" rx="0.666666667"></rect>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

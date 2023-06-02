@@ -1,0 +1,107 @@
+
+.searchGroupNamebox{
+    box-sizing: border-box;
+  height: 36px;
+  width: 240px;
+  border: 1px solid #C3C3C3;
+  border-radius: 3px;
+  background-color: #FFFFFF;
+  padding-left:23px;
+}
+
+
+  .group-name {
+    height: 15px;
+    width: 89px;
+    color: #212121;
+    margin-right: 17px;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 15px;
+  }
+
+  .available-unassigned {
+    height: 26px;
+    color: #212121;
+    font-family: "GothamRegular";
+    font-size: 22px;
+    letter-spacing: 0;
+    line-height: 26px;
+  }
+  .table-color{
+    background-color: white;
+  }
+  .btn-padding{
+    padding: 0px;
+  }
+  .grp-name{
+    padding: 6px;
+  }
+  .available-unassigned-padding{
+   padding: 5px;
+  }
+
+  tbody {
+    height: 285px;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 69% !important;
+    left: 10%;
+    float: right;
+    margin-top: -34px;
+    margin-right: 0px;
+}
+
+.modal-header{
+  border-bottom:none;
+}
+
+.modal-footer{
+  border-top:none;
+}
+
+.select-search-div{
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  margin-left: 29px;
+}
+
+.select-width{
+  max-width: 112px;
+  border: 1px;
+}
+
+.search-img{
+  margin-left: -8px;
+  z-index: 99;
+  left:18px;
+  position: relative;
+  left: -17%;
+}
+
+.align-baseline h2 {
+  font-size: 14px;
+}
+
+.select-search-div select {
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.create-group-search {
+  margin-right: 13%;
+}
+
+.modal-content {
+  height: 225px;
+}

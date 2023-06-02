@@ -1,0 +1,45 @@
+<div class="sp-portal-wrapper" *ngIf="userRoles?.getAuditRecords?.allowed">
+  <div class="row">
+    <div class="col-md-3">
+      <!-- breadcrumb-->
+      <ul class="breadcrumb">
+        <li><a routerLink="/devices">Dashboard</a></li>
+        <li class="active"><a href="#">Audit Logs</a></li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- header -->
+  <div class="row">
+    <div class="col-md-2">
+      <h2 class="mainheading">Audit Logs</h2>
+    </div>
+    <div class="sp-portal-search-dropdown flex-grew-1">
+      <div class="input-group col-md-5">
+        <div class="input-group-prepend bgWhite">
+          <select class="btn select-fields" [(ngModel)]="searchInField" (change)="selectField($event.target.value)">
+            <option value="action">Action Performed</option>
+            <option value="device">Device Serial</option>
+          </select>
+        </div>
+        <input type="text" class="form-control" aria-label="Text input with dropdown button" [(ngModel)]="searchTerm"
+          (ngModelChange)="checkForEmptyString(searchTerm)" placeholder="Search"
+          (keyup.enter)="searchAuditLogList(searchTerm)">
+        <img src="../../assets/images/thumbnail.svg" alt="search"
+          class="right-align dropdown-search-icon  cursor-pointer" (click)="searchAuditLogList(searchTerm)">
+      </div>
+    </div>
+  </div>
+
+  <!-- table section -->
+  <div class="mdc-panel" *ngIf="auditLogsData">
+    <app-data-grid [devicesList]=auditLogsData [config]=configAuditLog [showPagination]=true [noOfElements]=noOfElements
+    (selectedDates)="applyDateFilter($event)" [tableColumnHeaders]=tableColumnHeaders (pageChanged)="pageChanged($event)"></app-data-grid>
+  </div>
+
+</div>
+
+<div *ngIf="!userRoles?.getAuditRecords?.allowed">
+  <h3>Access denied</h3>
+</div>

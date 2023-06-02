@@ -1,0 +1,84 @@
+<div class="sp-portal-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- breadcrumb-->
+            <ul class="breadcrumb">
+                <li><a routerLink="/devices">Dashboard</a></li>
+                <li class="active-breadcrumb" *ngIf="updateType==1"><a (click)="changeAppVersion()">App Update</a></li>
+                <li class="active-breadcrumb" *ngIf="updateType==0"><a (click)="changeAppVersion()">Global Level App Package Update</a></li>
+                <li class="active" *ngIf="updateType==0"><a href="#">Global Level App Package Update</a></li>
+                <li class="active" *ngIf="updateType==1"><a href="#">Group Level App Package Update</a></li>
+                <li class="active-breadcrumb" *ngIf="updateType==3"><a (click)="changeAppVersion()">App Update</a></li>
+
+                <li class="active"><a href="#">Non-Compatible Devices(s)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- header -->
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="mainheading">Alert : Non-Compatibe Devices Found </h2>
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-custom btn-main"  (click)="changeAppVersion()" >Change App Version </button>
+            <button type="button" class="btn btn-custom btn-secondary" [disabled]="disableProceedButton" (click)="ignoreAndProceed()">Ignore Non-Compatible & Proceed</button>
+        </div>
+    </div>
+
+    <!-- table section -->
+    <div class="mdc-panel">
+        <div class="row">
+            <div class="col-md-12">
+                 <h2 class="subheader">Showing {{nonCompatibleDeviceList?.length}} non-compatible devices for app package {{selectedAppPackageName}}</h2>
+            </div>
+            <table class="table table-bordered table-width-adjust">
+                <thead>
+                  <tr id="tablerow">
+                    <th class="column-width-200" >Mac ID</th>
+                    <th class="column-width-200" >Alias</th>
+                    <th class="column-width-200" >Group</th>
+                    <th class="column-width-200" >Date Enrolled</th>
+                    <th class="column-width-200" >Location</th>
+                    <th class="column-width-100" >Status</th>
+                    <th class="column-width-100" >Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr  *ngFor="let item of nonCompatibleDeviceList">
+                    <td >{{item.device.macid}}</td>
+                    <td >{{item.device.alias}}</td>
+                    <td >{{item.device?.group ? item.device.group : 'NA' | uppercase}}</td>
+                    <td >{{item.device.enrolled_on === 0 ? 'NA' : item.device.enrolled_on | date:'MM-dd-yyyy HH:mm:ss'}}</td>
+                    <td >{{item.device?.location ? item.device.location : 'NA' | uppercase}}
+                      {{item.device?.locationZip ? item.device.locationZip : ' ' }}</td>
+                    <td >{{item.device?.presence | uppercase}}</td>
+                    <td >{{item.resultDescription}} </td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+</div>
+
+<!-- Multiple device app update modal -->
+<div class="modal fade" bsModal #updateDeviceAppModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="firmwareModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title popupheader" id="firmwareModalLabel">App package update</h5>
+     </div>
+     <div class="modal-body subheader">
+         {{totalCompatibleDeviceCount}} Device will be update with  {{selectedAppPackageName}} application package <br>
+        Would you like to continue?<br>
+       <input type="checkbox" [(ngModel)]="restartDevice"><span style="margin-left: 11px;" class="restart-device">Restart devices when completed</span>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-custom btn-main" (click)="closePopUp()">Cancel</button>
+       <button type="button" class="btn btn-custom marginright-30 btn-secondary"
+         (click)="updateDeviceApp()">Update</button>
+     </div>
+   </div>
+ </div>
+</div>

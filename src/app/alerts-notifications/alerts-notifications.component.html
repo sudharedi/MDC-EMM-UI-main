@@ -1,0 +1,71 @@
+<div class="sp-portal-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- breadcrumb-->
+            <ul class="breadcrumb">
+                <li><a routerLink="/devices">Dashboard</a></li>
+                <li class="active"><a href="#">Alerts & Notifications</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- header -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mainheading">Alerts & Notifications</h2>
+        </div>
+    </div>
+
+    <!-- table section -->
+
+    <div class="tabSelection" #tabs>
+      <div class="row align-baseline">
+        <div class="sp-portal-tabs flex-grew-1">
+          <ul class="nav nav-pills">
+            <li><a data-toggle="pill" href="#alertTab" class="active">Alerts</a>
+            </li>
+            <li><a data-toggle="pill" href="#notificationTab">Notifications</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="tab-content grid-overflow-x">
+        <div id="alertTab" class="tab-pane active in" >
+          <ul class="notification-list">
+            <div *ngFor="let alert of alertsData">
+
+              <li *ngIf="alert.type === 2">
+                <span class="notification-type" [ngClass]="{'danger': alert.type == 'critical'}"></span>
+                <div class="notification-details">
+                  <p>{{alert.event}}<p>
+                  <p><b>{{alert.deviceSerial}}</b><span> {{alert.id}} </span></p>
+                </div>
+                <div class="notification-date-time">
+                  <p>{{alert.timestamp}}</p>
+                  <p>{{alert.time}}</p>
+                </div>
+              </li>
+            </div>
+          </ul>
+
+        </div>
+        <div id="notificationTab" class="tab-pane fade">
+          <ul class="notification-list">
+            <div *ngFor="let alert of alertsData">
+              <li *ngIf="alert.type === 1">
+                <span class="notification-type" [ngClass]="{'danger': alert.type == 'critical'}"></span>
+                <div class="notification-details">
+                  <p>{{alert.event}}<p>
+                  <p><b>{{alert.deviceSerial}}</b><span> {{alert.id}} </span></p>
+                </div>
+                <div class="notification-date-time">
+                  <p>{{alert.timestamp}}</p>
+                  <p>{{alert.time}}</p>
+                </div>
+              </li>
+            </div>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+</div>

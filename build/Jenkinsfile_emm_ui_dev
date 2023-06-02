@@ -1,0 +1,195 @@
+def S3Url="s3"
+pipeline {
+  agent any
+  
+tools {nodejs "node10"}
+
+environment {
+
+def SOCKET_URL="dev-mdc-monitor.proterra.com"
+def COGNITO_ID="us-east-1_TNryPv9dQ"
+def COGNITO_CLIENT_ID="glvhg0hqhqqbdfuarvfsug4rt"
+def AMS_URL="exp-api.proterra.com/exp-ams-dev/ams/v1/ui/tabs"
+
+def S3_DAILY_BUILDS="mdc-builds"
+def S3_BUILDS_PATH="EXP-EMM-DEV-ENV/UI_daily"
+def S3_BUILD_CODE_PATH="dist/SP-Portal"
+def S3_GUI_BUCKET="mdc-dev-webapp"
+def S3_BUILDS_URL="https://${S3_DAILY_BUILDS}.s3.amazonaws.com/${S3_BUILDS_PATH}/${BUILD_NUMBER}/"
+def S3_HTML_URL="https://${S3_DAILY_BUILDS}.s3.amazonaws.com/${S3_BUILDS_PATH}/${BUILD_NUMBER}/releasenotes_UI_${BUILD_NUMBER}.html"
+
+
+def 	MAIL_SUBJECT="MDC EMM DEV UI BUILD"
+def 	MAIL_FROM="sboosaraju@proterra.com"
+def 	MAIL_TO="sboosaraju@proterra.com,sparvathaneni@proterra.com,jadapa@proterra.com,saray@proterra.com,vtatiparthi@proterra.com,averma@proterra.com"
+// def MAIL_TO="sboosaraju@proterra.com,sparvathaneni@proterra.com"
+		
+}
+  stages {
+    stage('Config changes') {
+      steps {
+        sh '''#!/bin/bash +x
+		
+		#5File : src/app/web-socket.service.ts
+		# const socket = new SockJS('https://dev-mdc-monitor.proterra.com/notifications');
+		sed -i s/dev-mdc-monitor.proterra.com/${SOCKET_URL}/g ${WORKSPACE}/src/app/web-socket.service.ts
+		echo "grep ${SOCKET_URL} ${WORKSPACE}/src/app/web-socket.service.ts"
+		grep ${SOCKET_URL} ${WORKSPACE}/src/app/web-socket.service.ts
+		
+		echo "Config changes completed"
+		
+		'''}
+		}		
+    stage('Build') {
+      steps {
+        sh '''#!/bin/bash +x
+		#S3_DAILY_BUILDS="mdc-builds"
+		#S3_BUILDS_PATH="EXP-EMM-DEV-ENV/UI_daily"
+        npm install -g @angular/cli
+        npm install
+        npm run build 
+        if [ $? -eq 0 ] 
+        then 
+			echo "Build is successful" 
+        else  
+			echo "Build is Failed" 
+			exit 1 
+        fi 
+
+		echo "Proceeding with changelog generation"
+		if [ -z $GIT_PREVIOUS_SUCCESSFUL_COMMIT ]
+		then
+			GIT_PREVIOUS_SUCCESSFUL_COMMIT=d65e7236d9eb83b44524de37ccbdc362944ad3b0
+		fi
+
+		cd ${WORKSPACE}/build
+revlist=$(git log --pretty=format:"%H" $GIT_PREVIOUS_SUCCESSFUL_COMMIT..$GIT_COMMIT)
+(
+  > changelog.xml
+  echo '<?xml version="1.0"?>' >> changelog.xml
+  echo '<log>' >> changelog.xml
+  for rev in $revlist
+  do
+	echo "$(git log -1 --date=iso --pretty=format:"<logentry>%n<revision>%H</revision>%n<author>%an</author>%n<date>%ad</date>%n<msg>%n%B%n</msg>%n" $rev | sed -r 's/&/and/g' | grep -v '^Co-authored-by:')" >> changelog.xml
+    echo '</logentry>' >> changelog.xml
+  done
+  echo '</log>' >> changelog.xml
+)
+
+		if [ $? -eq 0 ]
+		then
+			cd ${WORKSPACE}/build
+			python2 gen_releasenotes.py
+			if [ $? -eq 0 ] 
+			then
+				cd $WORKSPACE
+				echo "Deploying the dist folder for build number $BUILD_NUMBER"  
+				export S3_SOURCE="$WORKSPACE/dist"
+				export S3_TARGET="s3://${S3_DAILY_BUILDS}/${S3_BUILDS_PATH}/${BUILD_NUMBER}/dist/"
+				aws s3 cp $S3_SOURCE $S3_TARGET --recursive			
+				
+				tar cvzf dist.tar.gz dist/
+				export S3_SOURCE="$WORKSPACE/dist.tar.gz"
+				export S3_TARGET="s3://${S3_DAILY_BUILDS}/${S3_BUILDS_PATH}/${BUILD_NUMBER}/"
+				aws s3 cp $S3_SOURCE $S3_TARGET			
+				if [ $? -eq 0 ] 
+				then 
+					echo "Artifact deployed" 
+				else 
+					echo "Artifact deployment failure" 
+					exit 1 
+				fi
+				
+				export S3_SOURCE_CHANGELOG="$WORKSPACE/build/releasenotes_UI_${BUILD_NUMBER}.html"
+				export S3_TARGET_CHANGELOG="s3://${S3_DAILY_BUILDS}/${S3_BUILDS_PATH}/${BUILD_NUMBER}/"
+				aws s3 cp $S3_SOURCE_CHANGELOG $S3_TARGET_CHANGELOG
+				if [ $? -eq 0 ] 
+				then 
+					echo "changelog deployed to s3"
+					cd $WORKSPACE
+					S3_BUILDS_URL="https://${S3_DAILY_BUILDS}.s3.amazonaws.com/${S3_BUILDS_PATH}/${BUILD_NUMBER}/"
+					changelog=$(basename $(echo $S3_SOURCE_CHANGELOG))
+				else 
+					echo "changelog deployment failure" 
+					exit 1 
+				fi 
+			else
+				echo "Release notes generation failure"
+				exit 1
+			fi
+		else
+			echo "changelog.xml is not generated"
+			exit 1
+		fi
+		'''
+			}
+			}
+			
+    stage('Deploy to S3') {
+      steps {
+        sh '''#!/bin/bash +x
+		# Deploy code to s3 web app bucket  S3_GUI_BUCKET
+ 
+		# Empty S3 Wepapp  bucket  before deploying latest code
+		echo "***** Making s3 bucket ${S3_GUI_BUCKET} as Empty ***** "
+		aws s3 rm s3://${S3_GUI_BUCKET} --recursive
+		echo "Check size after empty"
+		aws s3 ls --summarize --human-readable --recursive s3://${S3_GUI_BUCKET}    |  grep "Total "
+		# Copy latest build to s3 wepapp  bucket
+		echo "*****  Copy latest build to s3 webapp  bucket ${S3_GUI_BUCKET} ***** "
+		if [ ! -d ${WORKSPACE}/${S3_BUILD_CODE_PATH} ]
+		then 	
+			echo "ERROR : Application code does not exists . Please check"
+			exit 
+		else
+			cd ${WORKSPACE}/${S3_BUILD_CODE_PATH}
+			pwd
+			ls -l
+		fi
+		aws s3 cp  --recursive  ${WORKSPACE}/${S3_BUILD_CODE_PATH} s3://${S3_GUI_BUCKET} --acl public-read
+		#Add Release notes file
+		echo "Deployed ${S3_BUILDS_URL} at `date` " > Deployed_Version_${BUILD_NUMBER}.txt
+		aws s3 cp  Deployed_Version_${BUILD_NUMBER}.txt s3://${S3_GUI_BUCKET} --acl public-read
+		echo "Check size after new code pushed"
+		aws s3 ls --summarize --human-readable --recursive s3://${S3_GUI_BUCKET}    |  grep "Total "
+		echo "=========== Done ============="
+		'''
+		}
+		}					
+}
+  post {
+    success {
+        script{
+		sh '''
+	      export bodymessage="Hi,<br /> \
+              You are recieving this email with BUILD NUMBER & BUILD STATUS OF UI<br /><br /> \
+              BUILD NUMBER: "$BUILD_NUMBER"<br /><br /> \
+              BUILD STATUS: "SUCCESS"<br /><br /> Details are available in   $S3_BUILDS_URL   <br /><br />  Release notes is available in $S3_HTML_URL <br /><br /> "
+			  
+
+			aws ses send-email --from  ${MAIL_FROM}  --destination "ToAddresses=${MAIL_TO}" --message '{"Subject": {"Data": "'"$MAIL_SUBJECT"'","Charset": "UTF-8"},"Body": {"Html": {"Data": "'"$bodymessage"'","Charset": "UTF-8"}}}'  --region us-east-1           
+		   '''
+             
+            }
+        }
+   
+     failure {
+        script{
+		sh '''
+	      export bodymessage="Hi,<br /> \
+              You are recieving this email with BUILD NUMBER & BUILD STATUS OF UI<br /><br /> \
+              BUILD NUMBER: "$BUILD_NUMBER"<br /><br /> \
+              BUILD STATUS: "FAILURE"<br /><br /> "
+	      
+		  aws ses send-email --from  ${MAIL_FROM}  --destination "ToAddresses=${MAIL_TO}" --message '{"Subject": {"Data": "'"$MAIL_SUBJECT"'","Charset": "UTF-8"},"Body": {"Html": {"Data": "'"$bodymessage"'","Charset": "UTF-8"}}}'  --region us-east-1
+              '''
+             
+            }
+        }
+	  always { 
+            cleanWs()
+        }
+    }
+ 
+  
+}

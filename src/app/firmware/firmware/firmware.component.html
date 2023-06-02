@@ -1,0 +1,38 @@
+<!-- <div class="app-packages-card" *ngFor="let package of firmwareData index as i"> -->
+  <div class="app-packages-card">
+    <div class="app-packages-left-content">
+      <div class="app-packages-left-inner release_date">
+        <h5>Version</h5>
+        <p>{{firmwareData?.firmwareVersion}}</p>
+      </div>
+      <div class="app-packages-left-inner">
+        <h5>Release Date</h5>
+        <p>{{firmwareData?.dateOfRelease}}</p>
+      </div>
+      <div class="app-packages-left-inner">
+        <h5>Size</h5>
+        <p>{{firmwareData?.fileSize}}</p>
+      </div>
+      <div class="app-packages-left-inner">
+        <h5>Update Status </h5>
+        <p class="color-green" [ngClass]="{'color-red': firmwareData.status == 'Failed', 'color-orange' : firmwareData.status == 'In_progress' }">{{firmwareData?.status?firmwareData?.status:'NA'}}</p>
+      </div>
+    </div>
+    <div class="app-packages-img-text">
+      <img src="../../assets/images/release.svg" alt="security" (click)="onSelectReleaseNotes(firmwareData)">
+      <p class="font-regular">Release Notes</p>
+    </div>
+    <div class="app-packages-img-text" *ngIf="firmwareData.status === 'NA'  || firmwareData.status===undefined">
+      <img src="../../assets/images/install.svg" data-toggle="modal" data-target="#firmwareModal"
+        (click)="onSelectFirmWare(firmwareData)" alt="security">
+      <p class="color-blue">Update</p>
+    </div>
+    <div id="cancelButton" class="app-packages-img-text" *ngIf="updateType===2 && (firmwareData.status === 'Failed' ||  firmwareData.status === 'In_progress')">
+      <img src="../../assets/images/cancel.svg" alt="icon" (click)="onCancel(firmwareData)">
+      <p>Cancel</p>
+  </div>
+  <div id="onReInstall" class="app-packages-img-text"  *ngIf="updateType===2 && firmwareData.status === 'Failed'">
+    <img src="../../assets/images/re-install.svg" alt="icon" (click)="onReInstall(firmwareData)">
+    <p class="color-red">Re-Install</p>
+</div>
+</div>

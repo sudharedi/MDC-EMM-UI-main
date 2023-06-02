@@ -1,0 +1,39 @@
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox" id="checkAll" name="selectAll" (click)="selectAll($event)" [(ngModel)]="selectAllDevices">
+      </th>
+      <th>GROUP
+      </th>
+      <th>DATE CREATED
+      </th>
+      <th>NO OF DEVICES
+      </th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let group of deviceGroups | paginate: configGroup;">
+      <td><input type="checkbox" name="{{group.checked}}" [(ngModel)]="group.checked"
+        (click)="selectedRow($event.target.checked,group)"></td>
+      <td>{{group.name }}</td>
+      <td>{{group.createdOn === 0 ? 'NA' : group.createdOn | date:'MM-dd-yyyy HH:mm:ss'}}</td>
+      <td style="color: #007bff;">{{group.deviceCount}}</td>
+      <td>
+        <button type="button" id="detailsBtn" class="btn btn-outline-primary btn-table-view" (click)="viewGroupDetails(group)">view</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="row pagination-section" style="width: 100%;">
+  <div class="col-md-6">
+    <p>showing {{(configGroup.currentPage * 10)-9}} to {{configGroup.currentPage * 10 - (10-noOfElementsGroup)}} of
+      {{configGroup.totalItems}}
+      entries</p>
+  </div>
+  <div class="col-md-6">
+    <pagination-controls (pageChange)="groupPageChange($event)" class="my-pagination" id="deviceGroupPagination">
+    </pagination-controls>
+  </div>
+</div>

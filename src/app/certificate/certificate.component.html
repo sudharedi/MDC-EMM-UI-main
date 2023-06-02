@@ -1,0 +1,26 @@
+<div class="app-packages-card">
+    <div class="app-packages-left-content">
+        <div class="app-packages-left-inner">
+          <h5>Issued On</h5>
+          <p>{{certificateData.issuedOn === 0 ? 'NA' : certificateData.issuedOn | date:'MM-dd-yyyy HH:mm:ss'}}</p>
+        </div>
+        <div class="app-packages-left-inner">
+            <h5>Expires On</h5>
+            <p>{{certificateData.expiresOn === 0 ? 'NA' : certificateData.expiresOn | date:'MM-dd-yyyy HH:mm:ss'}}</p>
+        </div>
+
+        <div class="app-packages-left-inner">
+          <h5>Update Status </h5>
+          <p class="color-green" [ngClass]="{'color-red': certificateData.status == 'Failed'}">{{certificateData?.status? certificateData.status:'NA'}}</p>
+        </div>
+    </div>
+
+    <div class="app-packages-img-text" *ngIf="certificateData.status !== 'QUEUED'">
+        <img src="../../assets/images/update.svg" alt="icon" (click)="onCertificateUpdate(certificateData)">
+        <p class="">Update</p>
+    </div>
+    <div class="app-packages-img-text" *ngIf="certificateData.status === 'QUEUED'" (click)="onCertificateCancel($event)">
+        <img src="../../assets/images/cancel.svg" alt="icon">
+        <p>Cancel</p>
+    </div>
+</div>

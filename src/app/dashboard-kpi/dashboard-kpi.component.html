@@ -1,0 +1,18 @@
+<div class="sp-portal-wrapper">
+  <div class="row">
+      <div class="col-md-6">
+          <div class="sp-portal-left-pannel">
+            <!-- breadcrumb-->
+            <ul class="breadcrumb">
+              <li><a  routerLink="/devices">Dashboard</a></li>
+              <li> Devices - {{selectedStatus?.status | titlecase}}</li>
+            </ul>
+
+            <h2 class="left-pannel-heading">Devices - {{selectedStatus.status | titlecase}} ({{devicesList?.length}})</h2>
+      </div>
+  </div>
+  <div class="mdc-panel" *ngIf="devicesList">
+    <app-data-grid [devicesList]=devicesList [config]=configDataGrid [showPagination]=false
+    [tableColumnHeaders]=tableColumnHeaders ></app-data-grid>
+  </div>
+</div>

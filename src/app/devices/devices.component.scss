@@ -1,0 +1,114 @@
+.heading {
+  padding-left: 20px;
+  padding-top: 30px;
+  font-size: 22px;
+  color: #212121;
+  font-weight: 300;
+}
+
+.tabSelection {
+  width: 100%;
+}
+
+.nav-tabs {
+  margin-bottom: 14px;
+  border-bottom: none;
+}
+
+.disable-true {
+  color: gray;
+}
+
+.disable-false {
+  color: black;
+}
+
+input:disabled {
+  background: transparent;
+}
+
+.radio-button-fields {
+  margin-left: 30px;
+}
+
+#configModal {
+  z-index: 999999;
+}
+
+.modal-content {
+  height: 100%;
+  padding-top: 5%;
+  padding-left: 5%;
+}
+
+.modal-footer {
+  padding: 0px;
+}
+
+.padding-44 {
+  padding: 10px 44px;
+}
+
+.grid-overflow-x {
+  overflow-x: overlay;
+}
+
+.adjust-width {
+  width: 160px;
+}
+
+.global-button {
+  font-size: 14px;
+  height: 40px;
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-top: -16px;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.select-fields:hover .select-fields:active {
+  background: white;
+  color: black;
+}
+
+.btn-width:disabled {
+  background-color: #109AD6;
+  border-color: #109AD6;
+}
+
+.btn-width {
+  width: 160px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.group-tab-select-fields {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.delete-modal .modal-header {
+  border-bottom:none;
+}
+
+.delete-modal .modal-footer {
+  border-top:none;
+  padding-bottom: 12px;
+}
+
+.delete-modal .modal-content {
+  height: 225px;
+  padding: 0px;
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 63.1 (101010) - https://sketch.com -->
+    <title>03BD5D5D-3654-4438-8ECE-3B58A955CBB6</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3d-Global-Config-Update" transform="translate(-530.000000, -18.000000)">
+            <g id="Alert-/-Success" transform="translate(520.000000, 11.000000)">
+                <g id="Group-3" transform="translate(10.000000, 7.000000)">
+                    <circle id="Oval" fill="#FFFFFF" cx="11" cy="11" r="11"></circle>
+                    <g id="green-tick" transform="translate(6.000000, 7.000000)" stroke="#62A644" stroke-width="1.69230769">
+                        <polyline points="0 5.50749138 3.73394691 8 10 -4.4408921e-16"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

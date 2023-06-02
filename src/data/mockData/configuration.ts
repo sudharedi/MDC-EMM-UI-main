@@ -1,0 +1,151 @@
+export const configurationValues = {
+  configs: [{
+    advanceParam: false,
+    boolValue: false,
+    description: 'Charging Sequence',
+    displayName: null,
+    intValue: 0,
+    maximum: 4,
+    minimum: 1,
+    name: 'charge_seq',
+    strValue: '1,2,3,4',
+    type: 'text',
+    unit: '%'
+  }],
+  lastModifiedBy: 'alok',
+  lastModifiedDate: '2020-10-05T09:34:41.049+0000',
+  status: 0
+};
+
+export const sampleConfigValues = [
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Charging Sequence',
+    displayName: 'Dispenser Charging Sequence',
+    intValue: 0,
+    maximum: 4,
+    minimum: 1,
+    name: 'charge_seq',
+    strValue: '1,2,3,4',
+    type: 'text',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Bulk Charge Limit for Dispenser in Slot 1',
+    displayName: 'Dispenser 1 Bulk SOC',
+    intValue: 90,
+    maximum: 110,
+    minimum: 1,
+    name: 'd1_bulk_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Top Charge Limit for Dispenser in Slot 1',
+    displayName: 'Dispenser 1 Top Off SOC',
+    intValue: 80,
+    maximum: 110,
+    minimum: 1,
+    name: 'd1_top_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Bulk Charge Limit for Dispenser in Slot 2',
+    displayName: 'Dispenser 2 Bulk SOC',
+    intValue: 90,
+    maximum: 110,
+    minimum: 1,
+    name: 'd2_bulk_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Top Charge Limit for Dispenser in Slot 2',
+    displayName: 'Dispenser 2 Top Off SOC',
+    intValue: 100,
+    maximum: 110,
+    minimum: 1,
+    name: 'd2_top_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Bulk Charge Limit for Dispenser in Slot 3',
+    displayName: 'Dispenser 3 Bulk SOC',
+    intValue: 90,
+    maximum: 110,
+    minimum: 1,
+    name: 'd3_bulk_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Top Charge Limit for Dispenser in Slot 3',
+    displayName: 'Dispenser 3 Top Off SOC',
+    intValue: 100,
+    maximum: 110,
+    minimum: 1,
+    name: 'd3_top_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Bulk Charge Limit for Dispenser in Slot 4',
+    displayName: 'Dispenser 4 Bulk SOC',
+    intValue: 90,
+    maximum: 110,
+    minimum: 1,
+    name: 'd4_bulk_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: false,
+    description: 'Top Charge Limit for Dispenser in Slot 4',
+    displayName: 'Dispenser 4 Top Off SOC',
+    intValue: 100,
+    maximum: 110,
+    minimum: 1,
+    name: 'd4_top_soc',
+    strValue: null,
+    type: 'number',
+    unit: '%'
+  },
+  {
+    advanceParam: false,
+    boolValue: true,
+    description: 'Will the system go into preconditioning',
+    displayName: 'Preconditioning',
+    intValue: 0,
+    maximum: 0,
+    minimum: 0,
+    name: 'preconditioning',
+    strValue: null,
+    type: 'boolean',
+    unit: null
+  }
+];

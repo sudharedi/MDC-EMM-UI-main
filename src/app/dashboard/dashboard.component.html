@@ -1,0 +1,107 @@
+<div class="mdc-top-panel">
+  <div class="row" style="min-height: 122px;">
+    <div class="battery-total-devices">
+      <div class="battery">
+        <img class="card-img-top" src="../../assets/images/charging-station.svg" alt="device" class="device">
+      </div>
+      <div class="status-counts">
+        <h4>{{totalDeviceCount}}</h4>
+        <p>Total Devices</p>
+      </div>
+    </div>
+    <div class="dashboard-progressbar">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="progress large-progress-bar">
+            <div class="progress-bar bg-success dashboard-progress" [style.width.%]="countCharging" (click)="viewPage('charging')">
+            </div>
+            <div class="progress-bar bg-danger dashboard-progress" [style.width.%]="countFaulted" (click)="viewPage('faulted')">
+            </div>
+            <div class="progress-bar bg-warning dashboard-progress" [style.width.%]="countOffline" (click)="viewPage('offline')">
+            </div>
+            <div class="progress-bar bg-secondary dashboard-progress" [style.width.%]="countBooting" (click)="viewPage('booting')"></div>
+            <div class="progress-bar bg-info dashboard-progress" [style.width.%]="countIdle" (click)="viewPage('idle')"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row content-align">
+        <div class="col-md-2">
+          <div class="row device-status-count">
+            <div class="device-value">
+              <div class="small-progress-counts">
+                <h4>{{metricsData?.Charging}}</h4>
+              </div>
+            </div>
+            <div class="small-progress-bar">
+              <div class="progress count-progress-bar">
+                <div class="progress-bar bg-success" style="width:100%"></div>
+              </div>
+              <p class="count-progress-bar-status">Charging</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="row device-status-count">
+            <div class="device-value">
+              <div class="small-progress-counts">
+                <h3>{{metricsData?.Faulted}}</h3>
+              </div>
+            </div>
+            <div class="small-progress-bar">
+              <div class="progress count-progress-bar">
+                <div class="progress-bar bg-danger" style="width:100%"></div>
+              </div>
+              <p class="count-progress-bar-status">Faulted</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="row device-status-count">
+            <div class="device-value">
+              <div class="small-progress-counts">
+                <h3>{{metricsData?.Offline}}</h3>
+              </div>
+            </div>
+            <div class="small-progress-bar">
+              <div class="progress count-progress-bar">
+                <div class="progress-bar bg-warning" style="width:100%"></div>
+              </div>
+              <p class="count-progress-bar-status">Offline</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="row device-status-count">
+            <div class="device-value">
+              <div class="small-progress-counts">
+                <h3>{{metricsData?.Booting}}</h3>
+              </div>
+            </div>
+            <div class="small-progress-bar">
+              <div class="progress count-progress-bar">
+                <div class="progress-bar bg-secondary" style="width:100%"></div>
+              </div>
+              <p class="count-progress-bar-status">Booting</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="row device-status-count">
+            <div class="device-value">
+              <div class="small-progress-counts">
+                <h3>{{metricsData?.Idle}}</h3>
+              </div>
+            </div>
+            <div class="small-progress-bar">
+              <div class="progress count-progress-bar">
+                <div class="progress-bar bg-info" style="width:100%"></div>
+              </div>
+              <p class="count-progress-bar-status">Idle</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-devices></app-devices>

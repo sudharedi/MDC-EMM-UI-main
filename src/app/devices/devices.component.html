@@ -1,0 +1,106 @@
+<div class="mdc-panel">
+  <div class="row">
+    <div class="col-md-8">
+      <h2 class="subheader">Device Management</h2>
+    </div>
+    <div class="col-md-4 text-right">
+      <button type="button" class="btn btn-custom marginright-20 btn-secondary" (click)="showPopOver()"
+        data-toggle="dropdown">Initiate Global Update</button>
+      <app-select-update-type (updateDevices)="updateDevices($event)" updateType="0" [devicesCount]=totalDeviceCount
+        [showPopOverFlag]="showPopOverFlag" [clearUpateType]="clearUpateType"></app-select-update-type>
+    </div>
+
+    <div class="tabSelection" #tabs>
+      <div class="row align-baseline">
+        <div class="sp-portal-tabs flex-grew-1">
+          <ul class="nav nav-pills">
+            <li><a data-toggle="pill" href="#alldevices" class="active" (click)="slectedAllDevicesTab()">All Devices</a>
+            </li>
+            <li><a data-toggle="pill" href="#deviceGroups" (click)="slectedGroupTab()">Device Group</a></li>
+          </ul>
+        </div>
+        <div class="sp-portal-search-dropdown flex-grew-1">
+          <div class="input-group" *ngIf="!disableSearchFields">
+            <div class="input-group-prepend">
+              <select class="btn select-fields" [(ngModel)]="searchInField" (change)="selectField($event.target.value)"
+                disabled={{disableSearchFields}}>
+                <option value="serial">Serial</option>
+                <option value="location"> Location </option>
+                <option value="alias">Alias</option>
+                <option value="locationZip">LocationZip</option>
+                <option value="customer">Customer</option>
+                <option value="group">Group</option>
+              </select>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with dropdown button"
+              [(ngModel)]="searchTerm" (ngModelChange)="checkForEmptyString(searchTerm)" placeholder="Search" (keyup.enter)="searchDeviceList(searchTerm)">
+            <img src="../../assets/images/thumbnail.svg" alt="search" class="dropdown-search-icon  cursor-pointer" (click)="searchDeviceList(searchTerm)">
+          </div>
+
+          <div class="input-group" *ngIf="disableSearchFields">
+            <div class="input-group-prepend">
+              <select class="btn select-fields group-tab-select-fields" disabled={{disableSearchFields}}>
+                <option value="location"> Group Name </option>
+              </select>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with dropdown button"
+              [(ngModel)]="groupSearchTerm" (ngModelChange)="checkForEmptyStringGroups(groupSearchTerm)" placeholder="Search" (keyup.enter)="searchDeviceGroups(groupSearchTerm)">
+            <img src="../../assets/images/thumbnail.svg" alt="search" class="dropdown-search-icon cursor-pointer" (click)="searchDeviceGroups(groupSearchTerm)">
+          </div>
+        </div>
+        <div class="sp-portal-btn-groups flex-grew-10">
+          <button type="button" class="btn btn-custom btn-main" (click)="createGroup()" *ngIf="userRoles?.addDeviceGroup?.enable">Create Group</button>
+
+
+          <button type="button" class="btn btn-custom marginright-20 btn-secondary btn-width" [disabled]=!groupsSelected.length *ngIf="disableSearchFields && userRoles?.deleteDeviceGroup?.enable" (click)="showDeleteConfirmationModal()">Delete Group</button>
+          <div class="dropdown" *ngIf="!disableSearchFields">
+            <button type="button" (click)="showPopOver()" class="btn btn-custom marginright-20 btn-secondary btn-width"
+              data-toggle="dropdown" [disabled]=!devicesSelected.length>
+              Update
+            </button>
+            <app-select-update-type updateType="3" (updateDevices)="updateDevices($event)"
+              [devicesCount]=devicesSelected.length [showPopOverFlag]="showPopOverFlag" [clearUpateType]="clearUpateType"></app-select-update-type>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+
+      </div>
+      <div class="tab-content grid-overflow-x">
+        <div id="alldevices" class="tab-pane active in" *ngIf="devicesList">
+          <app-data-grid [devicesList]=devicesList [config]=configDataGrid [showPagination]=true [noOfElements]=noOfElements
+            [tableColumnHeaders]=tableColumnHeaders (selectedDevices)="selectedDevices($event)" [enableColumnReorder]="true"
+            (pageChanged)="pageChanged($event)" [clearRowSelected]=clearRowSelected (changeBooleanValue)="changeBooleanValue()" (selectedDates)="selectedDates($event)"></app-data-grid>
+        </div>
+        <div id="deviceGroups" class="tab-pane fade" *ngIf="deviceGroups">
+          <app-device-groups [deviceGroups]=deviceGroups [configGroup]=configGroup [noOfElementsGroup]=noOfElementsGroup
+            (groupPageChanged)="groupPageChanged($event)" (selectedGroups)="selectedGroups($event)" [clearGroupsRowSelected]=clearGroupsRowSelected (changeGroupBooleanValue)="changeGroupBooleanValue()"></app-device-groups>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal global-level-update" bsModal #configuarationUpdateModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+role="dialog" aria-labelledby="dialog-static-name">
+  <app-configuration [configValues]= configValues [configValuesCopy]=configValuesCopy [noOfDevices]=devicesSelected.length [updateType]=updateType [totalDeviceCount]=totalDeviceCount (cancelChanges)=cancelChanges() (updatedConfigValues)="updatedConfigValues($event)"></app-configuration>
+</div>
+
+<div class="modal fade delete-modal" bsModal #deleteConfirmatopnModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-edit">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body popup-text">
+
+       You are about to delete {{groupsSelected.length > 1 ? 'groups' : 'group'}}<br> <br>
+       Do you wish to continue
+      </div>
+      <div class="modal-footer pull-right">
+        <button type="button" class="btn btn-custom btn-main" (click)="deleteConfirmatopnModal.hide()">Cancel</button>
+        <button type="submit" class="btn btn-custom marginright-20 btn-proceed" (click)="deleteGroup()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>

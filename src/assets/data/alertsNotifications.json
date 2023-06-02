@@ -1,0 +1,32 @@
+{
+  "payload": 
+    [{
+      "name": "App installation on device",
+      "date": "Jun 19 17:13:34 2020 GMT",
+      "time": "03.40 PM",
+      "macId": "00:1B:44:11:3A:B7",
+      "status": "Failed",
+      "type": "normal"
+    },{
+      "name": "App installation on device",
+      "date": "Jun 19 17:13:34 2020 GMT",
+      "time": "03.40 PM",
+      "macId": "00:1B:44:11:3A:B7",
+      "status": "Failed",
+      "type": "critical"
+    },{
+      "name": "App installation on device",
+      "date": "Jun 19 17:13:34 2020 GMT",
+      "time": "03.40 PM",
+      "macId": "00:1B:44:11:3A:B7",
+      "status": "Failed",
+      "type": "critical"
+    },{
+      "name": "App installation on device",
+      "date": "Jun 19 17:13:34 2020 GMT",
+      "time": "03.40 PM",
+      "macId": "00:1B:44:11:3A:B7",
+      "status": "Failed",
+      "type": "critical"
+    }]
+}

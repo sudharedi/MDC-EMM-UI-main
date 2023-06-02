@@ -1,0 +1,100 @@
+<div class="header">
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" routerLink="/devices">
+      <img src="../../assets/images/logo.svg" alt="logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item mdc-portal-text">
+          <span class="">MDC Portal</span>
+        </li>
+      </ul>
+
+
+      <ul class="navbar-nav ml-auto nav-flex-icons">
+
+        <li class="nav-item custom-notifications">
+          <div class="btn-group" dropdown [insideClick]="true">
+            <a id="button-basic" dropdownToggle  class="nav-link dropdown-toggle"
+                    aria-controls="dropdown-alerts-notifications">
+                    <i *ngIf="!alertsData.length" class="fa fa-bell-o" aria-hidden="true"></i>
+                    <img *ngIf="alertsData.length" src="../../assets/images/Group.svg" alt="device" class="bell icon"><span class="caret"></span>
+          </a>
+            <ul id="dropdown-alerts-notifications" #dropdownId  *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-basic">
+              <section class="notifications-body">
+                <div class="sp-portal-tabs notifications-tabs flex-grew-1">
+                  <ul class="nav nav-pills">
+                    <li><a data-toggle="pill" href="#alerts" class="active" >Alerts</a></li>
+                    <li><a data-toggle="pill" href="#notifications">Notifications</a></li>
+                  </ul>
+                </div>
+                <div class="tab-content grid-overflow-x">
+                  <div id="alerts" class="tab-pane active in">
+                    <ul class="notification-list">
+                      <div *ngFor="let alert of alertsData">
+
+                        <li *ngIf="alert.type === 2">
+                          <span class="notification-type" [ngClass]="{'danger': alert.type == 'critical'}"></span>
+                          <div class="notification-details">
+                            <p>{{alert.event}}<p>
+                            <p><b>{{alert.deviceSerial}}</b><span> {{alert.id}} </span></p>
+                          </div>
+                          <div class="notification-date-time">
+                            <p>{{alert.timestamp}}</p>
+                            <p>{{alert.time}}</p>
+                          </div>
+                        </li>
+                      </div>
+                    </ul>
+                  </div>
+                  <div id="notifications" class="tab-pane fade">
+                    <ul class="notification-list">
+                      <div *ngFor="let alert of alertsData">
+                        <li *ngIf="alert.type === 1">
+                          <span class="notification-type" [ngClass]="{'danger': alert.type == 'critical'}"></span>
+                          <div class="notification-details">
+                            <p>{{alert.event}}<p>
+                            <p><b>{{alert.deviceSerial}}</b><span> {{alert.id}} </span></p>
+                          </div>
+                          <div class="notification-date-time">
+                            <p>{{alert.timestamp}}</p>
+                            <p>{{alert.time}}</p>
+                          </div>
+                        </li>
+                      </div>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+              <section class="notifications-footer text-center">
+                <span (click)="hideDropdown()"> View More </span>
+                <span (click)="clearNotifications()" class="margin-left-20"> Clear All </span>
+              </section>
+            </ul>
+          </div>
+        </li>
+
+
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light">
+            <span class="circle">{{currentUser?.firstName | slice:0:1}}</span>
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{currentUser?.firstName}} {{currentUser?.lastName}}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
+            <a class="dropdown-item" (click)="logout()">Logout</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,63 @@
+{
+  "apps": [
+    {
+      "name": "Dispenser State Machine",
+      "version": "1.0.0-r1",
+      "installed_on": 1595964186095
+    },
+    {
+      "name": "AWS IoT Client",
+      "version": "1.0.1-r1",
+      "installed_on": 1595964186095
+    },
+    {
+      "name": "SP Run Time",
+      "version": "1.1.1-r1",
+      "installed_on": 1595964186095
+    },
+    {
+      "name": "Logger Service",
+      "version": "1.0.0-r1",
+      "installed_on": 1595964186095
+    },
+    {
+      "name": "System Monitor",
+      "version": "1.0.1-r2",
+      "installed_on": 1584812863554
+    },
+    {
+      "name": "Database Service",
+      "version": "1.0.0-r1",
+      "installed_on": 1584812863554
+    }
+  ],
+  "assembly_serial": "MDC_GV_001",
+  "certificate_id": "8i7nV4Lig45jqxpu9vb4vjMzVCb6DHdVHSbisnHDcfQehU1ZhIFn4Hpcn4D3I1xe",
+  "cradlepoint_id": "CP-70000000049",
+  "cradlepoint_mac": "CE183F29EC71",
+  "enrolled_on": 1595964186095,
+  "firmware": "4.19.78-linux4sam-6.2",
+  "macid": "D64375D1E6EE",
+  "model": "SP60",
+  "pcs": "Proterra-PCS-60",
+  "serial": "D64375D1E6EE",
+  "simiccid": "0671AF58528B",
+  "status": 0,
+  "vendor": "Proterra",
+  "uptime": 0,
+  "alias": "Device-49",
+  "dispensers": [
+    {
+      "id": "yGeX6WrnPs"
+    },
+    {
+      "id": "SlJAjfSzVj"
+    },
+    {
+      "id": "fxvmi2aB7f"
+    },
+    {
+      "id": "N62ImZdDyc"
+    }
+  ]
+}

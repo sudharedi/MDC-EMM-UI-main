@@ -1,0 +1,108 @@
+<div class="sp-portal-wrapper" *ngIf="userRoles?.SOTA?.allowed">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- breadcrumb-->
+            <ul class="breadcrumb">
+                <li><a routerLink="/devices">Dashboard</a></li>
+                <li class="active" *ngIf="updateType==0"><a href="#">Global Level App Package Update</a></li>
+                <li *ngIf="updateType==1"><a routerLink="/groupDetails/{{groupId}}">Device Group</a></li>
+                <li class="active" *ngIf="updateType==1"><a href="#">Group Level App Package Update</a></li>
+                <li class="active" *ngIf="updateType==3"><a href="#">App Update</a></li>
+                <li class="active" *ngIf="updateType==4 ||updateType==null "><a href="#">Apps</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- header -->
+    <div class="row">
+        <div class="col-md-12">
+            <h2 *ngIf="updateType==0" class="mainheading">Global Level App Package Update
+                <button type="button" routerLink="/devices" class="btn btn-main pull-right">Cancel</button>
+            </h2>
+            <h2 *ngIf="updateType==4 || updateType==null" class="mainheading">Apps</h2>
+            <h2 *ngIf="updateType==3" class="mainheading">App Update</h2>
+            <h2 *ngIf="updateType==1" class="mainheading">Group Level App Package Update</h2>
+        </div>
+    </div>
+
+    <!-- tab section -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="sp-portal-tabs flex-grew-1 ds-flex paddingleft-0">
+                <ul class="nav nav-pills">
+                  <li (click)="changeTabSelection('defaultpackages')"><a title="Core apps installed on device" [ngClass]="{'active' : selectedTabName == 'defaultpackages'}">Default Packages</a></li>
+                  <li (click)="changeTabSelection('userpackages')"><a title="Optional applications" [ngClass]="{'active' : selectedTabName == 'userpackages'}">User Packages</a></li>                  
+                </ul>
+              </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab-content tab-content-lg custom-app-package">
+                <div id="defaultpackages" [ngClass]="{'active' : selectedTabName == 'defaultpackages'}" class="tab-pane in">
+                    <div *ngFor="let package of allPackageData index as i" >
+                        <div *ngIf="package.systemPackage">
+                            <app-package [packagesData]="package" [pageType]="'globalAppPackage'" (fnUpdate)="onSelectAppPackage($event)"  (fnReleaseNotes)="getReleaseNotes($event)"></app-package>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="userpackages" [ngClass]="{'active' : selectedTabName == 'userpackages'}" class="tab-pane in">
+                    <div *ngFor="let package of allPackageData index as i" >
+                        <div *ngIf="!package.systemPackage">
+                        <app-package [packagesData]="package" [pageType]="'userAppPackage'" (fnUpdate)="onSelectAppPackage($event)"  (fnReleaseNotes)="getReleaseNotes($event)"></app-package>
+                    </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+
+<div *ngIf="!userRoles?.SOTA?.allowed">
+    <h3>Access denied</h3>
+</div>
+<!-- Multiple device app update modal -->
+<div class="modal fade" bsModal #updateDeviceAppModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="firmwareModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title popupheader" id="firmwareModalLabel">{{popupHeaderText}}</h5>
+     </div>
+     <div class="modal-body subheader">
+        {{totaldeviceCount ? totaldeviceCount : ''}} Device will be update with  {{selectedAppPackageName}} application package <br>
+        Would you like to continue?<br>
+       <input type="checkbox" [(ngModel)]="restartDevice"><span style="margin-left: 11px;" class="restart-device">Restart devices when completed</span>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-custom btn-main" (click)="closePopUp()">Cancel</button>
+       <button type="button" class="btn btn-custom marginright-30 btn-secondary"
+         (click)="updateDeviceApp()">Update</button>
+     </div>
+   </div>
+ </div>
+</div>
+
+<!-- Release Notes modal -->
+<div class="modal fade sp-portal-custom-modal" bsModal #releaseNotesModal="bs-modal" [config]="{backdrop: 'static'}"
+    tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+    <div class="modal-dialog modal-md modal-dialog-release-notes">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="dialog-static-name" class="modal-title pull-left">{{modalHeaderText}} Release Notes</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="releaseNotesModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="section-release-notes">
+                    <h3> Release Notes</h3>
+                    <div class="release-notes">
+                        <markdown class="markdown-padding" [data]="markdownReleaseNotes"></markdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

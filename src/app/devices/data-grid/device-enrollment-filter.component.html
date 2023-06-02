@@ -1,0 +1,31 @@
+<div style="padding: 4px; width: 200px;">
+    <div>
+      <label>Sort</label>
+      <select class="form-control" id="exampleFormControlSelect1" [value]="sortDirection" (change)='sortDirection=$event.target.value'>
+        <option>ASC</option>
+        <option>DES</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="row align-center">
+        <div class="col-md-12 px-0">
+          <label>Date Range</label>
+        </div>
+        <div class="col-md-12 px-0">
+          <label>From</label>
+          <input class="form-control" id="myInput" [max]="toDate" [value]="fromDate" (change)='fromDate=$event.target.value' name="fromDate" type="date" placeholder="Search.." />
+        </div>
+        <div class="col-md-12 px-0 mt-2">
+          <label>To</label>
+          <input class="form-control" id="myInput" [min]="fromDate" [value]="toDate" (change)='toDate=$event.target.value' type="date" placeholder="Search.."/>
+        </div>
+      </div>
+    </div>
+    <div class="date-range-error" *ngIf="disableToDate">
+      <span>From date can not be greater than to date</span>
+    </div>
+    <div class="margintop-20 ds-flex space-between">
+      <button class="btn btn-secondary" (click)="applyFilter()" [disabled]="!fromDate || !toDate || disableToDate">Apply</button>
+        <button class="btn btn-main" (click)="clearFilter()">Clear</button>
+    </div>
+  </div>

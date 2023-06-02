@@ -1,0 +1,104 @@
+{
+  "payload": 
+    [{
+      "serialNumber": "j7v4JCUoDKXotPaEDz52S7djXjyTGYIbOovY8Ctf5lAq0rg3MeMxYQrpGiBASZVN",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "5TSGMehHtmZC69lO8Qmac31zJU1kC0dxKNMxzQL2kDl668TAUWV2WshHpZJ7OfIE",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "2OomoMT7lhFnthnQmiWvO5AXttYuLefiSyYaJH8YSGEOSTWOKqQnbgW4bvYDGa2k",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "cY2MYf0mLHp2pgSh3aRpDo1ren3nzimDyL5tqM5xfHVuJiC3Cq6zKdiWiZGTrOKA",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "K6Y60Y2VOH08tisG0SV1WU7BWo24S2UHG98F4NEVcG473ynrbZmzb0gDvELjPcET",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "eFbfaM6OBpYhKALHpHhmIZlxVxFVcefge0MEQhCp7ImE0Ute3VQkB8a6YaTc5icW",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "uvQVfrogtxZdkyauRKeQYxxjrxs8c3uMY1ZUlV9tcanKcWoOllDnA5gcFkPsJJGT",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "qHgAODHEpvYfcE49OntTYD846yFqTZLlqOP61YbvE58zpaoFQSSnhcfVx3k7MJzh",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "8i7nV4Lig45jqxpu9vb4vjMzVCb6DHdVHSbisnHDcfQehU1ZhIFn4Hpcn4D3I1xe",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    },{
+      "serialNumber": "cert_001",
+      "issuedOn": "Jun 19 17:13:34 2020 GMT",
+      "expiresOn": "Jun 19 17:13:34 2020 GMT",
+      "country": "US",
+      "state": "CA",
+      "locality": "BG",
+      "organisation": "Proterra",
+      "organisationUnit": "Apex",
+      "commonName": "Multidispenser@proterra.com"
+    }]
+}

@@ -1,0 +1,230 @@
+<div class="sp-portal-wrapper" *ngIf="userRoles?.FOTA?.allowed">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="sp-portal-left-pannel">
+        <!-- breadcrumb-->
+        <ul class="breadcrumb">
+          <li [ngClass]="{'active': last}" *ngFor="let breadcrumb of breadCrumbList;let last = last;"><a routerLink="{{breadcrumb.path}}">{{breadcrumb.name}}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row align-center">
+    <div class="col-md-5">
+      <h2 class="mainheading" style="margin-bottom: 0px;">{{pageTitle}}</h2>
+    </div>
+    <div class="col-md-3" *ngIf="updateType == 2">
+      <p class="color-green history-text" (click)="openUpdateHistoryModal()">Update history</p>
+    </div>
+  </div>
+  <div class="row margintop-30 firmdetails-inner" *ngIf="updateType == 2">
+
+    <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-7 details-left config-values-overflow">
+          <p>Current Version<span class="pull-right">:</span></p>
+        </div>
+        <div class="col-md-5  config-values-overflow">
+         <p> {{firmwareDetailsForSelectedDevice?.firmwareVersion}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7 details-left config-values-overflow">
+          <p>Last Updated<span class="pull-right">:</span></p>
+        </div>
+        <div class="col-md-5  config-values-overflow">
+         <p> {{ firmwareDetailsForSelectedDevice?.installedOn}}</p>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-7 details-left config-values-overflow">
+          <p>Last Update status	<span class="pull-right">:</span></p>
+        </div>
+        <div class="col-md-5 config-values-overflow">
+          <p>{{firmwareDetailsForSelectedDevice?.status }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7 details-left config-values-overflow" (click)="firmwareReleaseNotes(firmwareDetailsForSelectedDevice)">
+          <div class="img-text media media-center" >
+            <img src="../../../assets/images/release.svg" alt="security">
+            <p>Release Notes</p>
+          </div>
+        </div>
+
+      </div>
+    </div> -->
+
+  </div>
+
+
+
+
+  <div class="mdc-panel" *ngIf="firmwareListLoaded | async">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="subheader">Available Firmware Versions ({{firmwareList.length}})</h2>
+        <div *ngIf="updateType!==2" class="firmware-list">
+          <div  *ngFor="let package of firmwareList index as i">
+            <app-firmware [firmwareData]="package" [updateType]="updateType"
+                          (fnReleaseNotes)="getReleaseNotes($event)"
+                          (fnUpdate)="onSelectFirmWare($event)" (fnCancel)="onCancel($event)" (fnReInstall)="onReInstall($event)"></app-firmware>
+          </div>
+        </div>
+        <div *ngIf="updateType===2" class="firmware-list">
+          <div  *ngFor="let package of firmwareListForSelectedDevice index as i">
+            <app-firmware [firmwareData]="package" [updateType]="updateType"
+                          (fnReleaseNotes)="getReleaseNotes($event)"
+                          (fnUpdate)="onSelectFirmWare($event)" (fnCancel)="onCancel($event)" (fnReInstall)="onReInstall($event)"></app-firmware>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!userRoles?.getAuditRecords?.allowed">
+  <h3>Access denied</h3>
+</div>
+
+
+
+<!-- modal -->
+<div class="modal fade" bsModal #updateModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="firmwareModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title popupheader" id="firmwareModalLabel" *ngIf="updateType==2 ||updateType==3 ">Firmware Update</h5>
+        <h5 class="modal-title popupheader" id="firmwareModalLabel" *ngIf="updateType==0 ||updateType==1 ">{{pageTitle}}</h5>
+      </div>
+      <div class="modal-body subheader">
+        {{totaldeviceCount ? totaldeviceCount : ''}} Device will update with Firmware version {{selectedFirmware?.firmwareVersion}} <br><br>
+        Would you like to continue update?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-custom btn-main" (click)="updateModal.hide()">Cancel</button>
+        <button type="button" class="btn btn-custom marginright-30 btn-secondary"
+          (click)="updateFirmware()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade sp-portal-custom-modal" bsModal #releaseNotesModal="bs-modal" [config]="{backdrop: 'static'}"
+    tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+    <div class="modal-dialog modal-md modal-dialog-release-notes">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="dialog-static-name" class="modal-title pull-left">{{modalHeaderText}} Release Notes</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="releaseNotesModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="section-release-notes">
+                    <h3> Release Notes</h3>
+                    <div class="release-notes">
+                        <markdown class="markdown-padding" [data]="markdownReleaseNotes"></markdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- firmwareReleaseNotes -->
+<div class="modal fade sp-portal-custom-modal" bsModal #firmwareReleaseNotesModal="bs-modal" [config]="{backdrop: 'static'}"
+tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+<div class="modal-dialog modal-md modal-dialog-release-notes">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 id="dialog-static-name" class="modal-title pull-left">{{firmwareHeader}} Release Notes</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="firmwareReleaseNotesModal.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="section-release-notes">
+                <h3> Release Notes</h3>
+                <div class="release-notes">
+                    <markdown class="markdown-padding" [data]="firmwarereleaseNotes"></markdown>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Configuration Update History  Modal -->
+<div class="modal fade sp-portal-custom-modal" bsModal #UpdateHistoryModal="bs-modal"  tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title pull-left subheader">Firmware Update History </h2>
+        <!-- <button type="button" class="close pull-right" aria-label="Close" >  </button>-->
+        <span class="modal-close" aria-hidden="true" (click)="UpdateHistoryModal.hide()">&times;</span>
+
+      </div>
+      <div class="modal-body">
+          <!-- table section -->
+            <div class="row">
+              <div class="col-md-12">
+                  <table class="table table-bordered sp-portal-main-table">
+                      <thead>
+                        <tr>
+                          <th>New Firmware Version</th>
+                          <th>Old Firmware Version </th>
+                          <th>Date & Time</th>
+                          <th>Performed By</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr *ngFor="let history of historyData | paginate: configFirware; ">
+                          <td>{{history.firmwareVersion}}</td>
+                          <td>{{history.oldFirmwareVersion}}</td>
+                          <td>{{history.timestamp}} {{history.time}}</td>
+                          <td>{{history.createdBy}}</td>
+                          <td>{{history.status}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+          <div class="row pagination-section" *ngIf="historyData.length">
+            <div class="col-md-6">
+              <p>showing {{(configFirware.currentPage * 10)-9}} to {{(configFirware.currentPage * 10)- (10-noOfElementsFirmware)}} of
+                {{configFirware.totalItems ? configFirware.totalItems : null}} entries</p>
+            </div>
+            <div class="col-md-6">
+              <pagination-controls (pageChange)="pageChange($event)" class="my-pagination" id="firmwareGridPagination"></pagination-controls>
+            </div>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" bsModal #cancelFirmwareInstallationModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+role="dialog" aria-labelledby="dialog-static-name">
+<div class="modal-dialog modal-edit">
+  <div class="modal-content">
+    <div class="modal-header">
+    </div>
+    <div class="modal-body popup-text">
+
+     You are about to cancel firmware installation <br>
+     Do you wish to continue?
+    </div>
+    <div class="modal-footer pull-right">
+      <button type="button" class="btn btn-custom btn-main" (click)="cancelFirmwareInstallationModal.hide()">Cancel</button>
+      <button type="submit" class="btn btn-custom marginright-20 btn-proceed" (click)="onCancelInstallation()">Proceed</button>
+    </div>
+  </div>
+</div>
+</div>

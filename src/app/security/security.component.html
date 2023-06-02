@@ -1,0 +1,143 @@
+<div class="sp-portal-wrapper">
+    <div class="row">
+        <!-- security details-->
+        <div class="col-md-6">
+            <!-- breadcrumb-->
+            <ul class="breadcrumb">
+                <li><a routerLink="/devices">Dashboard</a></li>
+                <li><a routerLink="/deviceDetails/{{deviceSerial}}">Device Details</a></li>
+                <li class="active"><a href="#">Security</a></li>
+            </ul>
+            <!-- security details-->
+            <div class="security-details">
+                <div *ngIf="securityDetails && deviceData?.certificate?.status !== 'REVOKED'">
+                    <h2>{{deviceData?.macid}} Security</h2>
+                    <h3>Current Certificate <span  class="certificate-expiry color-red" *ngIf="diffDays < 3 && diffDays > 0"> will expries in {{diffDays}} day(s)</span>
+                        <span  class="certificate-expiry color-red" *ngIf="diffDays < 0"> expired</span></h3>
+                    <div class="">
+                        <h4 class="content-heading">Version : 1</h4>
+                        <div class="row">
+                            <div class="col-md-6 details-left">
+                                <p>Serial Number <span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.certificateId}}</p>
+                            </div>
+                        </div>
+
+                        <!-- validity -->
+                        <h4 class="content-heading">Validity</h4>
+                        <div class="row">
+                            <div class="col-md-6 details-left">
+                                <p>Not Before<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.issuedOn | date:'MM-dd-yyyy'}}</p>
+                            </div>
+                            <div class="col-md-6 details-left">
+                                <p>Not After<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.expiresOn | date:'MM-dd-yyyy'}}</p>
+                            </div>
+                        </div>
+                        <!-- subject -->
+
+                        <h4 class="content-heading">Subject</h4>
+                        <div class="row">
+                            <div class="col-md-6 details-left">
+                                <p>Country<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.country}}</p>
+                            </div>
+                            <div class="col-md-6 details-left">
+                                <p>State<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.state}}</p>
+                            </div>
+                            <div class="col-md-6 details-left">
+                                <p>Locality<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.locality}}</p>
+                            </div>
+                            <div class="col-md-6 details-left">
+                                <p>Organisation<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.organisation}}</p>
+                            </div>
+                            <div class="col-md-6 details-left">
+                                <p>Organisation Unit<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.orgUnit}}</p>
+                            </div>
+                            <div class="col-md-6 details-left">
+                                <p>Common Name<span class="pull-right">:</span></p>
+                            </div>
+                            <div class="col-md-6 details-right">
+                                <p>{{certificateData?.commonName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="revoke-details" *ngIf="!securityDetails || deviceData?.certificate?.status === 'REVOKED'">
+                    <h2>{{deviceData?.macid}} Security</h2>
+                    <p>No active certificate on this device</p>
+                </div>
+
+                <div class="button-section margintop-30">
+                    <button type="button" class="btn btn-custom marginright-20 btn-secondary"
+                        (click)="navigateToViewDetails()">Back</button>
+                    <button type="button" class="btn btn-custom btn-main" *ngIf="securityDetails && deviceData?.certificate?.status !== 'REVOKED' && userRoles?.deleteCertificate?.allowed"
+                        (click)="openRevokeCertificateModal()">Revoke</button>
+                </div>
+            </div>
+        </div> <!-- security details ends-->
+
+
+        <!-- Certificates  table-->
+        <div class="col-md-6 paddingright-0" *ngIf="userRoles?.listAllCertificates?.allowed">
+            <div [class]="{'disable-div': !securityDetails || deviceData?.certificate?.status === 'REVOKED'}"></div>
+            <div class="table-content">
+                <h4>Available Certificates
+                    ({{ certificateUpdateRequest ? allCertificateData?.length-1 : allCertificateData?.length}})
+                </h4>
+
+                <div class="certificate-list">
+
+                    <div *ngFor="let certificate of allCertificateData; index as i">
+                        <app-certificate [certificateData]="certificate"
+                            [certificateUpdateRequest]="certificateUpdateRequest" (fnUpdate)="updateCertificate($event)"
+                            (fnCancel)="cancelCertificateUpdate($event)"></app-certificate>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" bsModal #revokeModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+        role="dialog" aria-labelledby="dialog-static-name">
+        <div class="modal-dialog modal-edit">
+            <div class="modal-content">
+
+                <div class="modal-body popup-text">
+                    You are about to revoke the certificate, <br> device status becomes offline<br><br>
+                    Do you wish to continue?
+
+
+                </div>
+                <div class="modal-footer pull-right">
+                    <button type="button" class="btn btn-custom btn-main"
+                        (click)="revokeModal.hide()">Cancel</button>
+                    <button type="button" class="btn btn-custom marginright-30 btn-danger"
+                        (click)="revokeCertificate()">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

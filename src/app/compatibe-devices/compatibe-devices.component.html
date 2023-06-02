@@ -1,0 +1,95 @@
+<div class="sp-portal-wrapper" *ngIf="userRoles?.SOTA?.allowed">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- breadcrumb-->
+            <ul class="breadcrumb">
+                <li><a routerLink="/devices">Dashboard</a></li>
+                <li *ngIf="firmwareVersion=='firmwareUpdate'"><a class="cursor-pointer" (click)="goToFirmware()">Firmware</a></li>
+                <li *ngIf="appVersion=='appUpdate'"><a class="cursor-pointer" (click)="goToApps()">Apps</a></li>
+                <li class="active"><a href="#">Devices List</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- header -->
+    <div class="row"  *ngIf="appVersion=='appUpdate'">
+
+        <div class="col-md-8">
+            <h2 class="mainheading">List of compatible devices for Package update {{selectedPackageName}}</h2>
+        </div>
+        <div class="col-md-4 text-right">
+            <button type="button" class="btn btn-custom btn-secondary" (click)="updateAll()">Update All </button>
+            <button type="button" class="btn btn-custom btn-secondary" (click)="update()" [disabled]=!devicesSelected.length>Update</button>
+
+        </div>
+
+    </div>
+    <div class="row" *ngIf="firmwareVersion=='firmwareUpdate'">
+        <div class="col-md-8" >
+
+        </div>
+        <div class="col-md-4 text-right">
+            <button type="button" class="btn btn-custom btn-secondary" (click)="updateAllDeviceWithFirmware()">Update All </button>
+            <button type="button" class="btn btn-custom btn-secondary" (click)="updateDevicesWithFirmware()" [disabled]=!devicesSelected.length>Update</button>
+
+        </div>
+    </div>
+    <!-- table section -->
+    <div class="mdc-panel paddingtop-20">
+        <div class="row">
+            <div class="col-md-12">
+                 <h2 class="subheader">Device List</h2>
+            </div>
+            <app-data-grid [devicesList]=devicesList [config]=configDataGrid [showPagination]=true [noOfElements]=noOfElements
+            [tableColumnHeaders]=tableColumnHeaders
+            (pageChanged)="pageChanged($event)" (selectedDevices)="selectedDevices($event)"></app-data-grid>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!userRoles?.SOTA?.allowed">
+  <h3>
+    Access denied
+  </h3>
+</div>
+<div class="modal fade" bsModal #updateDeviceAppModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="firmwareModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title popupheader" id="firmwareModalLabel">App Update by Version</h5>
+     </div>
+     <div class="modal-body subheader">
+        {{devicesSelected.length}} Device will be update with  {{selectedPackageName}} application package <br>
+        Would you like to continue update?<br>
+       <input type="checkbox" [(ngModel)]="restartDevice"><span style="margin-left: 11px;" class="restart-device">Restart devices when completed</span>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-custom btn-main" (click)="closePopUp()">Cancel</button>
+       <button type="button" class="btn btn-custom marginright-30 btn-secondary"
+         (click)="updateAppPackageForSelectedDevice()">Update</button>
+     </div>
+   </div>
+ </div>
+</div>
+
+<div class="modal fade" bsModal #updateDeviceFirmwareModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="firmwareModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title popupheader" id="firmwareModalLabel">Firmware Update by Version</h5>
+     </div>
+     <div class="modal-body subheader">
+        {{devicesSelected.length}} Device will be update with  Firmware version {{selectedPackageName}}  <br><br>
+        Would you like to continue update?<br>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-custom btn-main" (click)="updateDeviceFirmwareModal.hide()">Cancel</button>
+       <button type="button" class="btn btn-custom marginright-30 btn-secondary"
+         (click)="updateFirmwareForSelectedDevices()">Update</button>
+     </div>
+   </div>
+ </div>
+</div>

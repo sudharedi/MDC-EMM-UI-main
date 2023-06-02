@@ -1,0 +1,626 @@
+<div class="sp-portal-wrapper">
+  <div class="row">
+
+    <!-- left pannel -->
+    <div class="col-md-6">
+      <div class="sp-portal-left-pannel">
+        <!-- breadcrumb-->
+        <ul class="breadcrumb">
+          <li><a routerLink="/devices">Dashboard</a></li>
+          <li class="active"><a>Device Details</a></li>
+        </ul>
+
+        <h2 class="left-pannel-heading">{{deviceData?.alias ? deviceData?.alias : deviceData?.macid}}</h2>
+
+        <div class="sp-portal-card">
+          <div class="ds-flex">
+            <div class="device-date-time">
+              <div class="ds-flex">
+                <div class="header-subtext flex-grew-3 width-left">
+                  <p>Last seen </p>
+                  <h5>{{(deviceData?.lastSeen === 0 || deviceData?.lastSeen === 'Invalid Date') ? 'NA' : deviceData?.lastSeen }}</h5>
+                </div>
+                <div class="header-subtext flex-grew-1 width-right">
+                  <p>Status</p>
+                  <h5 class="color-green" [ngClass]="{'color-red': (deviceData?.presence == 'Faulted' || deviceData?.presence == 'faulted')}">{{deviceData?.presence ? deviceData?.presence : 'NA'}}</h5>
+                </div>
+              </div>
+              <div class="ds-flex margintop-30">
+                <div class="header-subtext flex-grew-3 width-left">
+                  <p>Date Enrolled</p>
+                  <h5>{{ deviceData?.enrolled_on === 0 ? 'NA': deviceData?.dateOfEnrolled}}</h5>
+                </div>
+                <div class="header-subtext flex-grew-1 width-right">
+                  <p>Uptime</p>
+                  <h5 class="color-green">{{deviceData?.uptime_converted}}</h5>
+                </div>
+              </div>
+              <div class="ds-flex margintop-30">
+                <div class="header-subtext flex-grew-3 width-left">
+                  <p>Mode</p>
+                  <h5>{{emm}}</h5>
+                </div>
+                <div class="header-subtext flex-grew-1 width-right">
+                  <p>Top Off SOC</p>
+                  <h5>{{deviceData?.emm?.topOffSoc }}</h5>
+                </div>
+              </div>
+              <div class="ds-flex margintop-30">
+                <div class="header-subtext flex-grew-3 width-left">
+                  <p>Dispenser</p>
+                  <h5>{{deviceData?.emm?.ocppId}}</h5>
+                </div>
+                <div class="header-subtext flex-grew-1 width-right">
+                  <p>Bulk SOC</p>
+                  <h5>{{ deviceData?.emm?.bulkSoc}}</h5>
+                </div>
+              </div>
+              <div class="ds-flex margintop-30">
+                <div class="header-subtext flex-grew-3">
+                  <p>Force Switch</p>
+                  <h5>{{deviceData?.emm?.forceSwitch}}</h5>
+                </div>
+              </div>
+            </div>
+            <div class="device-actions">
+              <div class="ds-flex img-text-conatiner">
+                <div class="img-text" (click)="goToSecurity(deviceData.certificate_id)">
+                  <img src="../../assets/images/security.svg" alt="security">
+                  <p>Security</p>
+                </div>
+                <div class="img-text"  (click)="logsFaultsLink()">
+                  <img src="../../assets/images/logs.png" alt="security">
+                  <p>Logs & Faults</p>
+                </div>
+                <!-- <div class="img-text" (click)="faultHistoryLink()">
+                  <img src="../../assets/images/firmware.svg" alt="security">
+                  <p>Faults</p>
+                </div> -->
+                <div class="img-text" (click)="goToFirmware()" *ngIf="userRoles?.FOTA?.allowed">
+                  <img src="../../assets/images/firmware.svg" alt="security">
+                  <p>Firmware</p>
+                </div>
+                <div class="img-text flex-auto" (click)="rebootDevice()">
+                  <img src="../../assets/images/restart.svg" alt="security">
+                  <p class="color-blue">Restart Device</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="sp-portal-anc margin-14" (click)="showMoreDetails()" *ngIf="!showMore">View More Details
+            <img src="../../assets/images/downArrow.svg" alt="downArrow">
+          </a>
+          <div *ngIf="showMore">
+
+            <div class="row show-more-details mt-20">
+              <div class="col-md-4 header-subtext ml-0">
+                <p>MDCS/N</p>
+                <h5>{{deviceData.serial ? deviceData.serial : 'NA'}}</h5>
+              </div>
+              <div class="col-md-4 header-subtext ml-14">
+                <p>Customer</p>
+                <h5>{{deviceData.customer ? deviceData.customer: 'NA'}}</h5>
+              </div>
+              <div class="col-md-4 header-subtext">
+                <p>MD Junction Box</p>
+                <h5>{{deviceData.assembly_serial ? deviceData.assembly_serial : 'NA'}}</h5>
+              </div>
+            </div>
+
+            <div class="row show-more-details mt-20">
+              <div class="col-md-4 header-subtext ml-0">
+                <p>PCS S/N</p>
+                <h5>{{deviceData.pcs ? deviceData.pcs : 'NA'}}</h5>
+              </div>
+              <div class="col-md-4 header-subtext ml-14">
+                <p>CP Mac ID</p>
+                <h5>{{deviceData.cradlepoint_mac ? deviceData.cradlepoint_mac : 'NA'}}</h5>
+              </div>
+              <div class="col-md-4 header-subtext">
+                <p>CP ID</p>
+                <h5>{{deviceData.cradlepoint_id ? deviceData.cradlepoint_id : 'NA'}}</h5>
+              </div>
+            </div>
+
+            <div class="row show-more-details mt-20">
+              <div class="col-md-4 header-subtext ml-0">
+                <p>SIM IICCID/N</p>
+                <h5>{{deviceData.simiccid ? deviceData.simiccid : 'NA'}}</h5>
+              </div>
+              <div class="col-md-4 header-subtext ml-14">
+                <p>Firmware</p>
+                <h5>{{deviceData.firmware?.firmwareVersion ? deviceData.firmware?.firmwareVersion : 'NA'}}</h5>
+              </div>
+              <div class="col-md-4 header-subtext">
+                <p>App Packages</p>
+                <h5>{{appPackageVersion ? appPackageVersion : 'NA'	}}</h5>
+              </div>
+            </div>
+
+            <div class="row show-more-details mt-20">
+              <div class="col-md-4 header-subtext ml-0">
+                <p>MD Model</p>
+                <h5>{{deviceData.model ? deviceData.model : 'NA'}}</h5>
+              </div>
+            </div>
+            <div class="row">
+              <a class="sp-portal-anc margin-14" (click)="showMoreDetails()">Less Details
+                <img src="../../assets/images/upArrow.svg" alt="upArrow"></a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- -->
+        <div class="sp-portal-card">
+          <div class="ds-flex align-center">
+            <div class="header-subtext location-width">
+              <p>Location</p>
+              <h5>{{deviceData?.location ? deviceData.location : 'NA'}}</h5>
+            </div>
+            <div class="header-subtext flex-grew-1">
+              <p>Group</p>
+              <h5 class="">{{deviceData?.group ? deviceData.group : 'NA'}}</h5>
+            </div>
+            <div class="header-subtext flex-grew-1">
+              <p>Alias</p>
+              <h5 class="">{{deviceData?.alias ? deviceData.alias : 'NA'}}</h5>
+            </div>
+            <div class="flex-grew-1 text-right" *ngIf="userRoles?.FOTA?.allowed">
+              <span class="edit-circle" (click)="showModal()">
+                <img src="../../assets/images/edit.svg" alt="edit">
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- table data-->
+        <div class="sp-portal-pannel">
+          <div class="panel-heading ds-flex align-center" style="margin-bottom: 0px;">
+            <div class="caption-text">
+              <h3>Dispensers ({{deviceData?.dispensers.length}})</h3>
+            </div>
+            <div class="flex-grow-1 text-right anchor-group">
+              <span class="color-green" (click)="openDeviceHistoryModal()">History</span>
+            </div>
+          </div>
+
+          <!-- <div class="panel-heading">
+            <h3>Dispensers ({{deviceData?.dispensers.length}})</h3>
+          </div>
+          <div class="flex-grow-1 text-right anchor-group">
+            <span class="color-green" (click)="openDeviceHistoryModal()">History</span>
+          </div> -->
+          <div class="panel-body">
+            <table class="table panel-table  table-bordered sp-portal-custom-table margintop-30">
+              <thead>
+                <tr>
+                  <th style="width: 120px;">Channel ID</th>
+                  <th>CCSoM Dev ID</th>
+                  <th style="width: 150px;">Dispenser status </th>
+                  <th style="width: 50px;">Status of charge(%)</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let dispensers of deviceData?.dispensers index as i">
+                <tr>
+                  <td>{{dispensers.channelId ? dispensers.channelId : i + 1}}</td>
+                  <td>{{dispensers.ccsomdevid ? dispensers.ccsomdevid  : 'NA'}}</td>
+                  <td>{{dispensers.status}}</td>
+                  <td>{{dispensers?.soc > 0 ? dispensers?.soc : ''}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- table data-->
+        <div class="sp-portal-pannel mt-20">
+          <div class="panel-heading ds-flex align-center">
+            <div class="caption-text">
+              <h3>Configuration</h3>
+              <p class="fontSize-12">Last Updated: {{configValuesLastUpdated?.lastModifiedDate}} , By: {{configValuesLastUpdated?.lastModifiedBy | titlecase }}</p>
+            </div>
+            <div class="flex-grow-1 text-right anchor-group">
+              <span class="color-green" (click)="openConfigurationHistoryModal()">History</span>
+              <span (click)="changeConfigurations()" class="color-blue">Change</span>
+            </div>
+
+
+          </div>
+          <div class="panel-body panel-body-configuration">
+            <div class="row mt-20">
+              <div class="config-values-layout" *ngFor="let config of configValues; let i = index">
+                <div class="row">
+                  <div class="col-md-7 details-left config-values-overflow">
+                    <p>{{config.displayName}}</p>
+                  </div>
+                  <div class="col-md-1">
+                    <span class="pull-right">:</span>
+                  </div>
+                  <div class="col-md-4 details-right config-values-overflow">
+                    <p *ngIf="config.type=='number' && config.name != 'device_reboot_frequency' && config.name != 'device_reboot_schedule' && config.name != 'device_time_zone'">{{config.intValue}} {{config?.unit}}</p>
+                    <p *ngIf="(config.type=='text' || config.type=='string') && config.name !='charge_seq'">{{config.strValue}} {{config?.unit}}</p>
+                    <p *ngIf="(config.type=='text' || config.type=='string') && config.name =='charge_seq'">{{config.strValue}}</p>
+                    <p *ngIf="config.type=='boolean'">{{config.boolValue == true? 'Yes' : 'No'}} {{config?.unit}}</p>
+                    <p *ngIf="config.type == 'time' && config.name == 'device_reboot_schedule_start'">{{receiveHourFormatValue}} {{receiveAMPMValue}}</p>
+                    <p *ngIf="config.type == 'time' && config.name == 'device_reboot_schedule_end'">{{receiveHourFormatEndValue}} {{receiveAMPMEndValue}}</p>
+                    <p *ngIf="config.type == 'number' && config.name == 'device_reboot_frequency'">{{receiveSelectedDay}}</p>
+                    <p *ngIf="config.type == 'number' && config.name == 'device_time_zone'">{{receiveUTCFormatValue}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- right pannel -->
+      <div class="col-md-6 padding-0">
+        <div class="sp-portal-right-pannel">
+          <h4>App Packages</h4>
+
+          <div class="sp-portal-tabs flex-grew-1 ds-flex paddingleft-0">
+            <ul class="nav nav-pills">
+              <li (click)="changeTabSelection('defaultpackages')"><a title="Core apps installed on device" [ngClass]="{'active' : selectedTabName == 'defaultpackages'}">Default Packages</a></li>
+              <li (click)="changeTabSelection('userpackages')"><a title="Optional applications" [ngClass]="{'active' : selectedTabName == 'userpackages'}">User Packages</a></li>
+            </ul>
+            <span class="anc-update" (click)="openUpdateHistoryModal()">Update History</span>
+          </div>
+
+          <div class="tab-content" style="height: 373px;">
+            <!-- {{allDeviceData.apps.length}} -->
+            <div id="defaultpackages" [ngClass]="{'active' : selectedTabName == 'defaultpackages'}" class="tab-pane in custom-app-package">
+              <div *ngFor="let package of finalAppPackagesList index as i">
+                <div *ngIf="package.systemPackage">
+                  <app-package [packagesData]="package"  [tabType]="'Default Packages'" (fnUpdate)="onSelectAppPackage($event)" (fnReleaseNotes)="getReleaseNotes($event)" (fnCancel)="onCancel($event)"></app-package>
+                </div>
+               </div>
+            </div>
+             <div id="userpackages"  [ngClass]="{'active' : selectedTabName == 'userpackages'}" class="tab-pane fade show">
+              <div *ngFor="let package of finalAppPackagesList index as i">
+                <div *ngIf="!package.systemPackage">
+                  <app-package [packagesData]="package" [tabType]="'User Packages'" (fnUpdate)="onSelectAppPackage($event)" (fnUnInstall)="onUnInstallAppPackage($event)" (fnReInstall)="onReInstallAppPackage($event)" (fnCancel)="onCancel($event)" (fnReleaseNotes)="getReleaseNotes($event)"></app-package>
+                </div>
+              </div>
+             </div>
+        </div>
+
+
+      </div>
+      <div class="sp-portal-pannel">
+        <div class="panel-heading">
+          <h3>Recent Faults</h3>
+        </div>
+        <div class="panel-body">
+          <table class="table panel-table  table-bordered sp-portal-custom-table margintop-30">
+            <thead>
+              <tr>
+                <th style="width: 170px;">Date</th>
+                <th>Fault</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let recentFaultItem of deviceRecentFaultsData | paginate: recentFaultsPaginationConfig;">
+                <td>{{recentFaultItem.timestamp}}</td>
+                <td>{{recentFaultItem.message}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="row pagination-section">
+          <div class="col-md-6">
+            <p>showing {{(recentFaultsPaginationConfig.currentPage * 10)-9}} to {{(recentFaultsPaginationConfig.currentPage * 10)- (10-noOfElements)}} of
+              {{recentFaultsPaginationConfig.totalItems ? recentFaultsPaginationConfig.totalItems : null}} entries</p>
+          </div>
+          <div class="col-md-6">
+            <pagination-controls (pageChange)="pageChangeRecentFaults($event)" class="my-pagination" id="recentFaultsPagination"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Model popups -->
+<div class="modal fade sp-portal-custom-modal" bsModal #editModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-edit">
+    
+    <form [formGroup]="editDeviceForm" *ngIf="deviceData">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title pull-left subheader">Edit Device Details</h2>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="editModal.hide()">
+          <!-- <span aria-hidden="true">&times;</span> -->
+        </button>
+      </div>
+      <div class="modal-body">
+
+
+          <div class="form-group custom-form-group">
+            <label>Alias</label>
+            <input type="text" class="form-control" required maxlength="25" name="alias" formControlName="alias" [(ngModel)]="deviceData.alias">
+          </div>
+
+          <div class="form-group custom-form-group">
+            <label>Group</label>
+            <select name="group" class="group-name-select" id="" formControlName="group" [(ngModel)]="deviceData.group" (change)="selectGroupName($event.target.value)" >
+              <option *ngFor="let groupName of deviceGroupsNames" [value]='groupName'>{{groupName}}</option>
+            </select>
+          </div>
+
+          <h5 class="form-subheader">Address</h5>
+          <div class="form-group custom-form-group">
+            <input type="text" class="form-control" name="address" formControlName="location" required maxlength="50"
+              [(ngModel)]="deviceData.location">
+          </div>
+          <div class="form-group custom-form-group">
+            <label>Zipcode</label>
+            <input type="text" class="form-control" name="Zipcode" formControlName="locationZip" required maxlength="10"
+              [(ngModel)]="deviceData.locationZip">
+          </div>
+
+      </div>
+      <div class="modal-footer justify-start">
+        <button type="submit" class="btn btn-custom marginright-20 btn-secondary" (click)="submit()" [disabled]="!editDeviceForm.valid">Save</button>
+        <button type="button" class="btn btn-custom btn-main" (click)="cancelChanges()">Cancel</button>
+      </div>
+    </div>
+    
+  </form>
+  </div>
+</div>
+
+
+<!-- history modal -->
+<div class="modal fade sp-portal-custom-modal" bsModal #updateHistoryModal="bs-modal"  tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title pull-left subheader">App Update History</h2>
+        <!-- <button type="button" class="close pull-right" aria-label="Close" >  </button>-->
+        <span class="modal-close" aria-hidden="true" (click)="updateHistoryModal.hide()">&times;</span>
+
+      </div>
+      <div class="modal-body">
+          <!-- table section -->
+            <div class="row">
+              <div class="col-md-12">
+                  <table class="table table-bordered sp-portal-main-table">
+                      <thead>
+                        <tr>
+                          <th>Package Type</th>
+                          <th>New Package Version</th>
+                          <th>Old Package Version</th>
+                          <th>Date & Time</th>
+                          <th>Performed By</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr *ngFor="let history of updateHistoryData | paginate: configSoftware; ">
+                          <td>{{history.type}}</td>
+                          <td>{{history.packageVersion}}</td>
+                          <td>{{history.oldPackageVersion}}</td>
+                          <td>{{history.timestamp}} {{history.time}}</td>
+                          <td>{{history.createdBy}}</td>
+                          <td>{{history.status}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+          <div class="row pagination-section" *ngIf="updateHistoryData?.length">
+            <div class="col-md-6">
+              <p>showing {{(configSoftware.currentPage * 10)-9}} to {{(configSoftware.currentPage * 10)- (10-noOfElementsSoftware)}} of
+                {{configSoftware.totalItems ? configSoftware.totalItems : null}} entries</p>
+            </div>
+            <div class="col-md-6">
+              <pagination-controls (pageChange)="pageChangeSoftware($event)" class="my-pagination" id="softwareGridPagination"></pagination-controls>
+            </div>
+            </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Configuration Update History  Modal -->
+<div class="modal fade sp-portal-custom-modal" bsModal #configurationUpdateHistoryModal="bs-modal"  tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title pull-left subheader">Configuration Update History </h2>
+        <!-- <button type="button" class="close pull-right" aria-label="Close" >  </button>-->
+        <span class="modal-close" aria-hidden="true" (click)="configurationUpdateHistoryModal.hide()">&times;</span>
+
+      </div>
+      <div class="modal-body">
+          <!-- table section -->
+            <div class="row">
+              <div class="col-md-12">
+                  <table class="table table-bordered sp-portal-main-table">
+                      <thead>
+                        <tr>
+                          <th>Date & Time</th>
+                          <th>Performed By</th>
+                          <th>Configuration Parameters</th>
+                          <th>New Value</th>
+                          <th>Old Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr *ngFor="let configHistory of configHistoryData | paginate: configHistory;">
+                          <td>{{configHistory.timestamp }} {{configHistory.time }}</td>
+                          <td>{{configHistory.createdBy}}</td>
+                          <td>{{configHistory.status}}</td>
+                          <td>{{configHistory.newValue}}</td>
+                          <td>{{configHistory.oldValue}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+          <div class="row pagination-section">
+            <div class="col-md-6">
+              <p>showing {{(configHistory.currentPage * 10)-9}} to {{(configHistory.currentPage * 10)- (10-noOfElements)}} of
+                {{configHistory.totalItems ? configHistory.totalItems : null}} entries</p>
+            </div>
+            <div class="col-md-6">
+              <pagination-controls (pageChange)="pageChange($event)" class="my-pagination" id="dataGridPagination"></pagination-controls>
+            </div>
+            </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Configuration Change   Modal -->
+<div class="modal global-level-update" bsModal #configuarationUpdateModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+role="dialog" aria-labelledby="dialog-static-name">
+  <app-configuration [timeZoneInte]="timeZoneInte" (receiveUTCFormatDataEvent)="receiveUTCFormatData($event)"
+    (receiveTwelveHourDataEvent)="receiveHourFormatData($event)" (receiveTwelveHourDataEndEvent)="receiveHourFormatEndData($event)" (receiveAMPMDataEvent)="receiveAMPMData($event)" (receiveAMPMDataEndEvent)="receiveAMPMEndData($event)"
+    (receiveTimeDataEvent)="receiveTimeData($event)" (receiveTimeDataEndEvent)="receiveTimeEndData($event)" (updatedSelectedDayEvent)="updatedSelectedDay($event)"
+    [defaultStartTimeData]="defaultStartTimeValue" [defaultEndTimeData]="defaultEndTimeValue" [iniTimeStart]="iniTimeStart" [iniTimeEnd]="iniTimeEnd" [configValues]=configValues [configValuesCopy]=configValuesCopy [noOfDevices]=1
+    [updateType]=updateType (cancelChanges)=cancelConfigChanges() (updatedConfigValues)="updatedConfigValues($event)">
+  </app-configuration>
+</div>
+
+ <!-- single device app update model -->
+ <div class="modal fade" bsModal #updateDeviceAppModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="firmwareModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title popupheader" id="firmwareModalLabel">Device App Update</h5>
+     </div>
+     <div class="modal-body subheader">
+      Device {{deviceData?.macid}} will update with version {{this.selectedApp}} <br><br>
+       Would you like to continue update?<br>
+       <input type="checkbox" [(ngModel)]="restartDevice"><span style="margin-left: 11px;" class="restart-device">Restart devices when completed</span>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-custom btn-main" (click)="closePopUp()">Cancel</button>
+       <button type="button" class="btn btn-custom marginright-30 btn-secondary"
+         (click)="updateDeviceApp()">Update</button>
+     </div>
+   </div>
+ </div>
+</div>
+<!-- confirmation modal to uninstall user package -->
+<div class="modal fade" bsModal #unInstallConfirmatopnModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-edit">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body popup-text">
+
+       You are about to uninstall App Package <br>
+       Do you wish to continue?
+      </div>
+      <div class="modal-footer pull-right">
+        <button type="button" class="btn btn-custom btn-main" (click)="unInstallConfirmatopnModal.hide()">Cancel</button>
+        <button type="submit" class="btn btn-custom marginright-20 btn-proceed" (click)="uninstallAppPackage()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade sp-portal-custom-modal" bsModal #releaseNotesModal="bs-modal" [config]="{backdrop: 'static'}"
+  tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-md modal-dialog-release-notes">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-static-name" class="modal-title pull-left">{{modalHeaderText}} Release Notes</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="releaseNotesModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="section-release-notes">
+          <h3> Release Notes</h3>
+          <div class="release-notes">
+            <markdown class="markdown-padding" [data]="markdownReleaseNotes"></markdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="modal fade" bsModal #cancelAppInstallationModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-edit">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body popup-text">
+
+       You are about to cancel app package installation <br>
+       Do you wish to continue
+      </div>
+      <div class="modal-footer justify-start">
+        <button type="button" class="btn btn-custom btn-main" (click)="cancelAppInstallationModal.hide()">Cancel</button>
+        <button type="submit" class="btn btn-custom marginright-20 btn-proceed" (click)="cancelInstallation()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Devce History  Modal -->
+<div class="modal fade sp-portal-custom-modal" bsModal #deviceHistoryModal="bs-modal"  tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title pull-left subheader">Device History </h2>
+        <span class="modal-close" aria-hidden="true" (click)="deviceHistoryModal.hide()">&times;</span>
+
+      </div>
+      <div class="modal-body">
+          <!-- table section -->
+            <div class="row">
+              <div class="col-md-12">
+                  <table class="table table-bordered sp-portal-main-table">
+                      <thead>
+                        <tr>
+                          <th>Date & Time</th>
+                          <th>Channel ID</th>
+                          <th>New Value</th>
+                          <th>Old Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr *ngFor="let deviceHistory of deviceHistoryData | paginate: deviceHistoryPaginationConfig;">
+                          <td>{{deviceHistory.timestamp }} {{deviceHistory.time }}</td>
+                          <td>{{deviceHistory?.channelId && deviceHistory?.channelId != null ? deviceHistory.channelId : 'NA'}}</td>
+                          <td>{{deviceHistory?.newOCPPID && deviceHistory?.newOCPPID != null ? deviceHistory.newOCPPID : 'NA'}}</td>
+                          <td>{{deviceHistory?.oldOCPPID && deviceHistory?.oldOCPPID != null ? deviceHistory.oldOCPPID : 'NA'}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+          <div class="row pagination-section">
+            <div class="col-md-6">
+              <p>showing {{(deviceHistoryPaginationConfig.currentPage * 10)-9}} to {{(deviceHistoryPaginationConfig.currentPage * 10)- (10-noOfElements)}} of
+                {{deviceHistoryPaginationConfig.totalItems ? deviceHistoryPaginationConfig.totalItems : null}} entries</p>
+            </div>
+            <div class="col-md-6">
+              <pagination-controls (pageChange)="pageChangeDeviceHistory($event)" class="my-pagination" id="deviceHistoryPagination"></pagination-controls>
+            </div>
+            </div>
+
+      </div>
+    </div>
+  </div>
+</div>

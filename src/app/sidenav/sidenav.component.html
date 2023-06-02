@@ -1,0 +1,16 @@
+<nav id="mySidebar" class="sidenav sidenav-custom">
+  <section class="sidenav-content">
+      <a class="nav-link " routerLink="/devices" tooltip="Dashboard" placement="right"  [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <img src="../../assets/images/chargepoints.svg" alt="device" class="device">
+      </a>
+      <a class="nav-link" (click)="appNavigation()" tooltip="Packages" placement="right" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}" *ngIf="userRoles?.SOTA?.allowed">
+        <img src="../../assets/images/rules.svg" alt="device" class="device">
+      </a>
+      <a class="nav-link" [ngClass]="{'active': isFirmware}" tooltip="Firmware" placement="right" (click)="firmwareNavigation()"  [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}" *ngIf="userRoles?.FOTA?.allowed">
+        <img src="../../assets/images/settings.svg" alt="device" class="device">
+      </a>
+      <a class="nav-link" routerLink="/auditlogs" tooltip="Audit Logs " placement="right" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}" *ngIf="userRoles?.getAuditRecords?.allowed">
+        <img src="../../assets/images/users.svg" alt="device" class="device">
+      </a>
+  </section>
+</nav>

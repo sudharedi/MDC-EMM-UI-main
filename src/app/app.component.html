@@ -1,0 +1,10 @@
+<div class="wrapper">
+    <app-loader-interceptor></app-loader-interceptor>
+    <app-header class="header" *ngIf="showNavbar"></app-header>
+    <div class="main">
+        <app-sidenav *ngIf="showSidebar"></app-sidenav>
+        <div class="content">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

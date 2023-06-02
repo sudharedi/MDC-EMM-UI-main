@@ -1,0 +1,17 @@
+thead>tr>th {
+  cursor: pointer;
+}
+
+thead{
+  background-color: #f8f9fa;
+  line-height: 15px;
+}
+
+.heading{
+  margin: 15px 0px;
+}
+
+pagination-controls{
+  display: flex;
+  flex-direction: row-reverse;
+}

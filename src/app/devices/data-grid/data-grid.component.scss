@@ -1,0 +1,46 @@
+.heading {
+	margin: 15px 0px;
+}
+
+.tab-right-section {
+	position: relative;
+	left: 22%;
+	margin-top: -3%;
+}
+
+.disable-row {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.table-width-adjust {
+	table-layout: fixed;
+}
+
+.column-width-100 {
+	width: 100px;
+}
+
+.column-width-200 {
+	width: 150px;
+}
+
+.column-width-50 {
+	width: 50px;
+}
+
+td {
+	overflow-wrap: break-word;
+}
+
+.create-group-movement-button {
+	box-sizing: border-box;
+	height: 50px;
+	padding: 5px;
+	margin-top: -11px;
+}
+
+.date-range-error {
+	margin-bottom: 3px;
+  color: #FA415F;
+}

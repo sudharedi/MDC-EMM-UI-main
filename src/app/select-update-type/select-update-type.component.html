@@ -1,0 +1,16 @@
+<div class="dropdown-menu global-update-div" *ngIf="showPopOverFlag">
+  <p *ngIf="devicesCount > 0" class="devicecount">Update will be initiated on {{devicesCount}} {{devicesCount > 1 ? 'devices' : 'device'}}</p>
+  <div style="display: inline-flex;margin: 10px;" class="devicecount">
+    <input type="radio" id="apps" name="updateContentType" value="0" [checked]="updateContentType == 0"
+      class="input-spacing" [(ngModel)]="updateContentType" *ngIf="userRoles?.SOTA?.allowed">
+    <label class="label-spacing" for="Apps" *ngIf="userRoles?.SOTA.allowed">Apps</label>
+    <input type="radio" id="firmware" name="updateContentType" value="1" [checked]="updateContentType == 1"
+      class="input-spacing" [(ngModel)]="updateContentType" *ngIf="userRoles?.FOTA?.allowed">
+    <label class="label-spacing" for="Firmware" *ngIf="userRoles?.FOTA?.allowed">Firmware</label>
+    <input type="radio" id="configuration" name="updateContentType" value="2" [checked]="updateContentType == 2"
+      class="input-spacing" [(ngModel)]="updateContentType">
+    <label class="label-spacing" for="Configuration">Configuration</label>
+  </div>
+
+  <button style="margin:10px;" class="btn btn-custom  btn-secondary" (click)="update()">Update</button>
+</div>

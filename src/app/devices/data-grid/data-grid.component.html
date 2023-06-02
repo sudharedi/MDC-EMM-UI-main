@@ -1,0 +1,165 @@
+<div class="table-responsive" [style.minHeight]="minHeight">
+  <table class="table table-bordered table-width-adjust" *ngIf="enableColumnReorder === undefined || enableColumnReorder === false">
+    <thead>
+      <tr id="tablerow">
+        <th class="column-width-50" *ngIf="tableColumnHeaders?.checkboxSelection">
+          <input type="checkbox"  id="checkAll" name="selectAll" (click)="selectAll($event)" [(ngModel)]="selectAllDevice">
+        </th>
+        <th class="column-width-200"  *ngIf="tableColumnHeaders?.macid">Mac ID
+        </th>
+        <th class="column-width-200"  *ngIf="tableColumnHeaders?.device_serial">Device serial
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.alias">Alias
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.customer">Customer
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.group">Group
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.newValue">New Value
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.oldValue">Old Value
+        </th>
+        <th class="column-width-200 filter-th" [ngClass]="{'active': showdropdown}" *ngIf="tableColumnHeaders?.enrolled_on">Date Enrolled
+          <span (click)="filterDate()" *ngIf="tableColumnHeaders?.date_filter">
+            <i id="test" class="fa fa-filter"></i>
+          </span>
+          <div *ngIf="showdropdown"  class="filter-dropdown">
+            <div class="form-group">
+              <label>Sort</label>
+              <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="sortDirection">
+                <option>ASC</option>
+                <option>DES</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="row align-center">
+                <div class="col-md-12 px-0">
+                  <label>Date Range</label>
+                </div>
+                <div class="col-md-12 px-0">
+                  <label>From</label>
+                  <input class="form-control" id="myInput" name="fromDate" type="date" placeholder="Search.." [(ngModel)]="fromDate" onkeydown="return false" (ngModelChange)="dateValidations()"/>
+                </div>
+                <div class="col-md-12 px-0 mt-2">
+                  <label>To</label>
+                  <input class="form-control" id="myInput" type="date" placeholder="Search.." [(ngModel)]="toDate" onkeydown="return false" [min]="minDate" (ngModelChange)="dateValidations()"/>
+                </div>
+              </div>
+
+
+            </div>
+            <div class="date-range-error" *ngIf="disableToDate">
+              <span>From date can not be greater than to date</span>
+            </div>
+            <div class="margintop-20 ds-flex space-between">
+              <button class="btn btn-secondary" (click)="selectedDateRange()" [disabled]="!fromDate || !toDate || disableToDate">Apply</button>
+               <button class="btn btn-main" (click)="clearSelectedDates()">Clear</button>
+            </div>
+
+          </div>
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.location">Location
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.serial">MDJB Serial #
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.last_heard">Last Seen
+        </th>
+        <th class="column-width-100" *ngIf="tableColumnHeaders?.status">Status
+        </th>
+        <th class="column-width-100" *ngIf="tableColumnHeaders?.uptime">Uptime <span> <br> HH:MM:SS</span>
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.warning">Warning
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.action_performed">Action Performed
+        </th>
+        <th class="column-width-200 filter-th" [ngClass]="{'active': showdropdown}" *ngIf="tableColumnHeaders?.date || tableColumnHeaders?.time">Date & Time
+          <span (click)="filterDate()" *ngIf="tableColumnHeaders?.date">
+            <i id="test" class="fa fa-filter"></i>
+          </span>
+          <div *ngIf="showdropdown"  class="filter-dropdown">
+            <div class="form-group">
+              <div class="row align-center">
+                <div class="col-md-12 px-0">
+                  <label>Date Range</label>
+                </div>
+                <div class="col-md-12 px-0">
+                  <label>From</label>
+                  <input class="form-control" id="myInput" name="fromDate" type="date" placeholder="Search.." [(ngModel)]="fromDate" onkeydown="return false" (ngModelChange)="dateValidations()"/>
+                </div>
+                <div class="col-md-12 px-0 mt-2">
+                  <label>To</label>
+                  <input class="form-control" id="myInput" type="date" placeholder="Search.." [(ngModel)]="toDate" onkeydown="return false" [min]="minDate" (ngModelChange)="dateValidations()"/>
+                </div>
+              </div>
+
+
+            </div>
+            <div class="date-range-error" *ngIf="disableToDate">
+              <span>From date can not be greater than to date</span>
+            </div>
+            <div class="margintop-20 ds-flex space-between">
+              <button class="btn btn-secondary" (click)="applyFilterOnAuditLogs()" [disabled]="!fromDate || !toDate || disableToDate">Apply</button>
+               <button class="btn btn-main" (click)="clearSelectedDates()">Clear</button>
+            </div>
+
+          </div>
+        </th>
+        <th class="column-width-200" *ngIf="tableColumnHeaders?.perfomed_by">Performed By
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr [ngClass]="{'disable-row':device.disableRow}" *ngFor="let device of devicesList | orderBy: key : reverse | filter:filter | paginate: config;">
+        <td *ngIf="tableColumnHeaders.checkboxSelection"><input type="checkbox" [checked]="device.checked" name="{{device.checked}}" [(ngModel)]="device.checked" [disabled]="device.disableRow"
+            (click)="selectedRow($event.target.checked,device)"></td>
+        <td *ngIf="tableColumnHeaders.macid"><a href="javascript:void(0)" (click)="deviceClick(device)">{{device?.macid}}</a></td>        
+        <td *ngIf="tableColumnHeaders.device_serial">{{device?.deviceSerial}}</td>
+        <td *ngIf="tableColumnHeaders.alias">{{device.alias}}</td>
+        <td *ngIf="tableColumnHeaders.customer">{{device.customer}}</td>
+        <td *ngIf="tableColumnHeaders.group">{{device?.group ? device.group : 'NA' | uppercase}}</td>
+        <td *ngIf="tableColumnHeaders.newValue">{{device.newValue}}</td>
+        <td *ngIf="tableColumnHeaders.oldValue">{{device.oldValue}}</td>
+        <td *ngIf="tableColumnHeaders.enrolled_on">{{device.enrolled_on === 0 ? 'NA' : device.enrolled_on | date:'MM-dd-yyyy HH:mm:ss'}}</td>
+        <td *ngIf="tableColumnHeaders.location">{{device?.location ? device.location : 'NA' | uppercase}}
+          {{device?.locationZip ? device.locationZip : ' ' }}</td>
+        <td *ngIf="tableColumnHeaders.serial">{{device.assembly_serial}}</td>
+        <td *ngIf="tableColumnHeaders.last_heard">{{device?.lastSeen === 'Invalid Date' ? 'NA' : device?.lastSeen}}</td>
+        <td *ngIf="tableColumnHeaders.status">{{device?.presence === 'JobNotification' ? 'NA' : device?.presence | uppercase}}</td>
+        <td *ngIf="tableColumnHeaders.uptime">{{device?.uptime_converted}}</td>
+        <td *ngIf="tableColumnHeaders.warning" style="color: #109AD6;" [ngClass]="{'color-red': device.diffDays < 3}">{{device.diffDays < 3 && device.diffDays > 0 ?  'Certificate will expire in ' : (device.diffDays < 0 ? 'Certificate expired' : 'NA')}} {{device.diffDays < 3 && device.diffDays > 0 ?  device.diffDays : ' '}} {{device.diffDays < 3 && device.diffDays > 0 ?  'day(s)' : ' '}} </td>
+        <td *ngIf="tableColumnHeaders.action_performed">{{device.action}}</td>
+        <td *ngIf="tableColumnHeaders.date">{{device.createdDate | date:'MM-dd-yyyy'}} {{device.createdDate | date:'HH:mm:ss'}}</td>
+        <td *ngIf="tableColumnHeaders.perfomed_by">{{device.lastModifiedBy}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ag-grid-angular *ngIf="enableColumnReorder != undefined && enableColumnReorder === true"
+    style="width: 100%; height: 500px;"
+    [rowData]="devicesList"
+    [columnDefs]="columnDefs"
+    [columnTypes]="columnTypes"
+    class="ag-theme-alpine"
+    [defaultColDef]="defaultColDef"
+    borders=true
+    suppressDragLeaveHidesColumns=true
+    suppressMenuHide=true
+    [frameworkComponents]="frameworkComponents"
+    (gridReady)="onGridReady($event)"
+    (dragStopped)="onDragStopped($event)"
+    >
+</ag-grid-angular>
+</div>
+<div  *ngIf="showSelectButton|| showRemoveButton" class="sp-portal-main-table create-group-movement-button">
+  <button *ngIf="showSelectButton" class="btn btn-custom btn-main" (click)="selectIndividualRowsToGroup()">Select</button>
+  <button *ngIf="showRemoveButton " class="btn btn-custom btn-main" (click)="deleteRow()">Remove</button>
+</div>
+<div class="row pagination-section" style="width: 100%;" *ngIf="devicesList && showPagination && config.totalItems > 0">
+  <li hidden *ngFor="let device of devicesList | orderBy: key : reverse | filter:filter | paginate: config;"></li>
+    <div class="col-md-6">
+      <p>showing {{(config.currentPage * 10)-9}} to {{(config.currentPage * 10)- (10-noOfElements)}} of
+        {{config.totalItems ? config.totalItems : null}} entries</p>
+    </div>
+    <div class="col-md-6">
+      <pagination-controls (pageChange)="pageChange($event)" class="my-pagination" id="dataGridPagination"></pagination-controls>
+    </div>
+</div>

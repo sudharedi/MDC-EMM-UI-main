@@ -1,0 +1,124 @@
+pipeline {
+  agent any
+  tools {nodejs "node10"}
+
+  stages {
+    stage('Build') {
+      steps {
+        sh '''#!/bin/bash +x
+		DAILY_BUILDS_S3="mdc-builds"
+        npm install -g @angular/cli
+        npm install
+        npm run prodBuild
+
+        if [ $? -eq 0 ] 
+        then 
+			echo "Build successful" 
+        else  
+			echo "Build Failed" 
+			exit 1 
+        fi 
+		
+		echo "Proceeding with changelog generation"
+
+		if [ -z $GIT_PREVIOUS_SUCCESSFUL_COMMIT ]
+		then
+				GIT_PREVIOUS_SUCCESSFUL_COMMIT=$(git rev-list --max-parents=0 HEAD)
+		fi
+
+ 
+cd build
+revlist=$(git log --pretty=format:"%H" $GIT_PREVIOUS_SUCCESSFUL_COMMIT..$GIT_COMMIT)
+(
+  > changelog.xml
+  echo '<?xml version="1.0"?>' >> changelog.xml
+  echo '<log>' >> changelog.xml
+  for rev in $revlist
+  do
+    echo "$(git log -1 --date=iso --pretty=format:"<logentry>%n<revision>%H</revision>%n<author>%an</author>%n<date>%ad</date>%n<msg>%B</msg>%n" $rev | sed -r 's/&/and/g')" >> changelog.xml
+    echo '</logentry>' >> changelog.xml
+  done
+  echo '</log>' >> changelog.xml
+)
+
+if [ $? -eq 0 ]
+then
+    cd build
+    python2 gen_releasenotes.py
+    if [ $? -eq 0 ] 
+    then
+       cd $WORKSPACE
+       echo "Deploying the dist folder for build number $BUILD_NUMBER"  
+       export S3_SOURCE="$WORKSPACE/dist"
+       export S3_TARGET="s3://${DAILY_BUILDS_S3}/EXP-STAGE-ENV/UI_daily/${BUILD_NUMBER}/dist/"
+       
+       aws s3 cp $S3_SOURCE $S3_TARGET --recursive
+       
+       tar cvzf dist.tar.gz dist/
+       
+       export S3_SOURCE="$WORKSPACE/dist.tar.gz"
+       
+       export S3_TARGET="s3://${DAILY_BUILDS_S3}/EXP-STAGE-ENV/UI_daily/${BUILD_NUMBER}/"
+       
+       aws s3 cp $S3_SOURCE $S3_TARGET
+    
+       if [ $? -eq 0 ] 
+       then 
+          echo "Artifact deployed" 
+       else 
+          echo "Artifact deployment failure" 
+          exit 1 
+       fi
+       export S3_SOURCE_CHANGELOG="$WORKSPACE/build/releasenotes_UI_daily_${BUILD_NUMBER}.html"
+       export S3_TARGET_CHANGELOG="s3://${DAILY_BUILDS_S3}/EXP-STAGE-ENV/UI_daily/${BUILD_NUMBER}/"
+	   
+       aws s3 cp $S3_SOURCE_CHANGELOG $S3_TARGET_CHANGELOG
+       if [ $? -eq 0 ] 
+       then 
+          echo "changelog deployed to s3"
+          cd $WORKSPACE
+          s3_url=https://mdc-builds.s3.amazonaws.com/EXP-STAGE-ENV/UI_daily/${BUILD_NUMBER}/
+          changelog=$(basename $(echo $S3_SOURCE_CHANGELOG))
+       else 
+          echo "changelog deployment failure" 
+          exit 1 
+       fi 
+    else
+        echo "Release notes generation failure"
+        exit 1
+    fi
+else
+    echo "changelog.xml is not generated"
+    exit 1
+fi
+'''
+      }
+    }
+  }
+  post {
+    success {
+        script{
+		sh '''
+	      export bodymessage="Hi,<br /> \
+              You are recieving this email with BUILD NUMBER & BUILD STATUS OF UI<br /><br /> \
+              BUILD NUMBER: "$BUILD_NUMBER"<br /><br /> \
+              BUILD STATUS: "SUCCESS"<br /><br /> "
+	      aws ses send-email --from kbonala@proterra.com --destination "ToAddresses=sboosaraju@proterra.com,sparvathaneni@proterra.com" --message '{"Subject": {"Data": "MDC PORTAL STAGE-UI BUILD","Charset": "UTF-8"},"Body": {"Html": {"Data": "'"$bodymessage"'","Charset": "UTF-8"}}}'  --region us-east-1
+              '''           
+            }
+        }
+   
+    failure {
+        script{
+		sh '''
+	      export bodymessage="Hi,<br /> \
+              You are recieving this email with BUILD NUMBER & BUILD STATUS OF UI<br /><br /> \
+              BUILD NUMBER: "$BUILD_NUMBER"<br /><br /> \
+              BUILD STATUS: "FAILURE"<br /><br /> "
+	      aws ses send-email --from kbonala@proterra.com --destination "ToAddresses=sboosaraju@proterra.com,sparvathaneni@proterra.com" --message '{"Subject": {"Data": "MDC PORTAL STAGE-UI BUILD","Charset": "UTF-8"},"Body": {"Html": {"Data": "'"$bodymessage"'","Charset": "UTF-8"}}}'  --region us-east-1
+              '''            
+            }
+        }
+    }
+   
+}

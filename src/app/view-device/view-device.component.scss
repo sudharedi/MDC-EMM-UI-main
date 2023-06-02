@@ -1,0 +1,129 @@
+.tabSelection ul li {
+  border: 1px solid gray;
+  padding: 5px 10px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.ms {
+  position: absolute;
+  right: 27%;
+}
+
+input[type=number][type=text] {
+  width: 90%;
+  /* height: 35px; */
+}
+
+.sp-portal-anc {
+  font-size: 14px;
+  color: #0099D9;
+}
+
+.margin-14 {
+  margin-left: 14px;
+}
+
+.margin-onViewMore {
+  margin-left: 0px;
+  // margin-right: 41px;
+}
+
+.ds-flex {
+  margin-bottom: 20px;
+}
+
+.modal-header {
+  border-bottom: none;
+  padding-top: 15px;
+}
+
+.form-group {
+  padding-top: 15px;
+}
+
+.form-control {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.form-subheader {
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+.package-buttons {
+  margin: 10px 0px;
+}
+
+.margin-left {
+  margin-left: -12px;
+}
+
+.show-more-details {
+  flex-wrap: inherit;
+}
+
+.ml-0 {
+  margin: 0px;
+}
+
+.ml-14 {
+  margin-left: 0%;
+}
+
+.fontSize-12 {
+  font-size: 12px;
+}
+
+.config-values-layout {
+  width: 100%;
+  float: right;
+}
+
+.config-values-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.panel-body-configuration {
+  max-height: 250px;
+  overflow-y: scroll;
+  margin-top: -21px;
+  font-size: 14px;
+}
+
+.group-name-select {
+  display: block;
+  border: none;
+  border-bottom: 1px solid #dee2e6;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.details-right {
+  display: contents;
+}
+
+.tab-content {
+  max-height: 800px;
+  overflow-y: scroll;
+}
+
+.width-left {
+  width: 70%;
+}
+
+.width-right {
+  width: 30%;
+}

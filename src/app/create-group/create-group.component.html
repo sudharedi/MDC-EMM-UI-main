@@ -1,0 +1,109 @@
+
+<div class="sp-portal-wrapper">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="sp-portal-left-pannel">
+              <!-- breadcrumb-->
+              <ul class="breadcrumb">
+                <li><a  routerLink="/devices">Dashboard</a></li>
+                <li class="active"  *ngIf="!isEditScreen"><a>Create Group</a></li>
+                <li  *ngIf="isEditScreen"><a  routerLink="/groupDetails/{{groupDetails.groupId}}">Device Group</a></li>
+                <li class="active" *ngIf="isEditScreen"><a>Edit Group</a></li>
+              </ul>
+
+              <h2 class="left-pannel-heading" *ngIf="!isEditScreen">Create Group</h2>
+              <h2 class="left-pannel-heading" *ngIf="isEditScreen">Edit Group</h2>
+            </div>
+        </div>
+        <div class="col-md-6" *ngIf="isEditScreen">
+            <div class="sp-portal-left-pannel">
+                <button type="button" (click)="showDeleteConfirmationModal()" style="margin-top: 47px;float:right;margin-right:0px;" class="btn btn-custom btn-main">Delete Group</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row align-baseline grp-name">
+        <div class="col-md-6">
+            <div class="sp-portal-left-pannel sp-portal-search-dropdown flex-grew-1">
+                <span class="group-name">Group Name</span>
+                <input type="text" [(ngModel)]="groupName" class="searchGroupNamebox" placeholder="Enter Group Name" required>
+            </div>
+        </div>
+        <div class="col-md-6 btn-padding">
+            <div class="sp-portal-btn-groups flex-grew-10 btn-padding" >
+                <button type="button" (click)="updateGroup(0)" class="btn btn-custom marginright-30 btn-secondary" *ngIf="!isEditScreen" [disabled]="!groupName">Create Group</button>
+                <button type="button" routerLink="/devices" class="btn btn-custom btn-main" *ngIf="!isEditScreen">Cancel</button>
+                <button type="button" (click)="updateGroup(1)" class="btn btn-custom marginright-30 btn-secondary" *ngIf="isEditScreen" [disabled]="groupName == ''">Save</button>
+                <button type="button" (click)="cancelChanges()" class="btn btn-custom btn-main" *ngIf="isEditScreen">Cancel Changes</button>
+              </div>
+        </div>
+
+    </div>
+
+    <div class="row align-baseline" style="padding: 5px;">
+        <div class="col-md-6">
+            <div class="sp-portal-search-dropdown" style="display: inline;">
+                <h2 class="available-unassigned" >Available/Unassigned Devices ({{unassignedDevicesPaginationConfig.totalItems}})</h2>
+            </div>
+                <div class="input-group">
+                    <div class="input-group-prepend select-search-div" >
+                        <select class="btn select-fields select-width"  id="select-tag" [(ngModel)]="searchInField" (change)="selectField($event.target.value)" >
+                            <option value="location">Location </option>
+                            <option value="alias">Alias</option>
+                            <option value="locationZip">LocationZip</option>
+                            <option value="customer">Customer</option>
+                            <option value="serial">Serial</option>
+                        </select>
+                    </div>
+                    <input type="text" class="form-control create-group-search" aria-label="Text input with dropdown button" [(ngModel)]="searchTerm" placeholder="Search" (ngModelChange)="checkForEmptyString(searchTerm)" (keyup.enter)="searchDeviceList(searchTerm)">
+                    <img src="../../assets/images/thumbnail.svg" alt="search" class="dropdown-search-icon search-img cursor-pointer" (click)="searchDeviceList(searchTerm)" >
+                </div>
+        </div>
+            <div class="col-md-6">
+                <h2 class="available-unassigned">Selected ({{selectedDeviceListToTable.length}})</h2>
+            </div>
+    </div>
+
+        <div class="row">
+            <div class="col-md-6 " >
+                <div class="table-color">
+                    <app-data-grid [devicesList]=devicesList [rowSelectedToGroup]=rowSelectedToGroup [noOfElements]=noOfElements [showPagination]=true [showSelectButton]="showSelectButton" [config]=unassignedDevicesPaginationConfig [tableColumnHeaders]=tableColumnHeaders   (selectedDevicesToGroup)="selectedDevicesToGroup($event)" (pageChanged)="pageChanged($event)" >
+                    </app-data-grid >
+                </div>
+            </div>
+            <div class="col-md-6" >
+                <div class="table-color">
+                    <app-data-grid [devicesList]="selectedDeviceListToTable" (deleteDeviceFromGroup)="deleteDeviceFromGroup($event)"  [showPagination]=false [showRemoveButton]="showRemoveButton" [config]=selectedDevicesPaginationConfig [tableColumnHeaders]=tableColumnHeaders   (selectedDevicesToGroup)="selectedDevicesToGroup($event)" (toggleRow)="toggleRow($event)" (toggleAllRow)="toggleAllRow($event)"></app-data-grid>
+                </div>
+                <div class="row" *ngIf="selectedDeviceListToTable.length">
+                    <div class="col-md-6">
+                        <p>showing {{(selectedDevicesPaginationConfig.currentPage * 10)-9}} to {{((selectedDevicesPaginationConfig.currentPage * 10)-9)+9}} of
+                            {{selectedDevicesPaginationConfig.totalItems}} entries</p>
+                    </div>
+                    <div class="col-md-6">
+                        <pagination-controls (pageChange)="selectedDevicesPageChange($event)" id="selectedDevicesPagination"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<div class="modal fade" bsModal #deleteConfirmatopnModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+  role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-edit">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="modal-body popup-text">
+
+       You are about to delete Group <br><br>
+       Do you wish to continue?
+      </div>
+      <div class="modal-footer pull-right">
+        <button type="button" class="btn btn-custom btn-main" (click)="deleteConfirmatopnModal.hide()">Cancel</button>
+        <button type="submit" class="btn btn-custom marginright-20 btn-proceed" (click)="deleteGroup()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>

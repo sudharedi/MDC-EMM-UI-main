@@ -1,0 +1,30 @@
+.sidenav{
+  width: 60px;
+  background-color: #4F5758;
+  //height: 1086px;
+  height: calc(100vh - 60px);
+}
+
+.sidenav a {
+  font-size: 25px;
+  color: white;;
+  display: block;
+  transition: 0.3s;
+  width: 60px;
+  height: 60px;
+}
+
+.fa{
+  display: inline;
+  padding: 18px;
+  color: white;
+}
+
+.sidenav.sidenav-custom .sidenav-content>.nav-link {
+  margin: 0;
+  padding: 0px;
+}
+
+.sidenav.sidenav-custom .sidenav-content>.nav-link.active, .sidenav.sidenav-custom .sidenav-content>.nav-link:hover {
+  background: #109AD6;
+}

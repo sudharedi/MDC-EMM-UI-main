@@ -1,0 +1,145 @@
+<div class="mdc-panel-header padding-top-15px no-margin-top">
+  <div class="row">
+    <div class="col-md-12" style="height: 25px;">
+      <!-- breadcrumb-->
+      <ul class="breadcrumb">
+        <li><a routerLink="/devices">Dashboard</a></li>
+        <li><a routerLink="/deviceDetails/{{deviceSerial}}">Device Details</a></li>
+        <li class="active"><a href="#">{{deviceAlias && deviceAlias != '' ? deviceAlias : deviceSerial}} Logs & Faults</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row date-search-row">
+    <div class="date-search-item" for="from-date-input">
+      <label class="active mar-top-5">Date Range From</label>
+    </div>
+    <div class="date-search-item logs-faults-date-width">
+      <input class="form-control" id="from-date-input" name="fromDate" type="date" [max]="toDate" placeholder="To Date" (change)='changeFromDate($event.target.value)' [value]="fromDate"
+        onkeydown="return false" />
+    </div>
+    <div class="date-search-item">
+      <label class="mar-top-5">To</label>
+    </div>
+    <div class="date-search-item logs-faults-date-width">
+      <input class="form-control" id="myInput" type="date" [min]="fromDate" placeholder="From Date" (change)='changeToDate($event.target.value)' [value]="toDate"
+        onkeydown="return false" />
+    </div>
+    <div class="date-search-item mar-top-5 margin-left-4rem">
+      <input type="checkbox" (change)="toggleAutorefresh()" [(ngModel)]="isAutoRefresh"><span style="margin-left: 11px; margin-top: 0.5rem" class="restart-device">Auto
+        Refresh</span>
+    </div>
+    <div class="date-search-item">
+      <button #showlogsbutton type="button" class="btn btn-custom marginright-20 btn-secondary"
+        (click)="showLogs()" *ngIf="logsSelected" [disabled]="isAutoRefresh">Show Logs</button>
+      <button #showfaultsbutton type="button" class="btn btn-custom marginright-20 btn-secondary"
+        (click)="showFaults()" *ngIf="!logsSelected" [disabled]="isAutoRefresh">Show Faults</button>
+    </div>
+  </div>
+  <div class="row align-center space-between">
+    <div class="row">
+      <div class="sp-portal-tabs">
+        <ul class="nav nav-pills">
+          <li (click)="logsTabClick()"><a data-toggle="pill" href="#logs" class="active">Logs</a>
+          </li>
+          <li><a data-toggle="pill" href="#faults" (click)="faultsTabClick()">Faults</a></li>
+        </ul>
+      </div>
+      <div class="sp-portal-search-dropdown margin-left-15px">
+        <div class="input-group">
+          <input type="text" class="form-control" (keyup.enter)="refreshRecords()" (keyup)="checkForEmptyString(searchString)" [value]="searchString" [(ngModel)]="searchString" aria-label="Text input with dropdown button" [placeholder]="logsSelected ? 'Search' : 'Enter fault code'">
+          <img src="../../assets/images/thumbnail.svg" alt="search" class="dropdown-search-icon  cursor-pointer" (click)="refreshRecords()">
+        </div>
+      </div>
+    </div>
+    
+    <div class="">
+      <button #downloadlogsbutton type="button" class="btn btn-custom marginright-20 btn-secondary" data-toggle="dropdown"
+        (click)="downloadLogs()" *ngIf="logsSelected">Download Logs</button>
+      <button #downloadfaultsbutton type="button" class="btn btn-custom marginright-20 btn-secondary" data-toggle="dropdown"
+        (click)="downloadFaults()" *ngIf="!logsSelected">Download Faults</button>
+    </div>
+  </div>
+</div>
+<div class="mdc-top-panel padding-top-15px no-margin-top">
+  <div class="row">
+    <div class="tabSelection sp-portal-wrapper" #tabs>
+      <div class="tab-content grid-overflow-x">
+
+        <div id="logs" class="tab-pane active in margin-left-15px">
+          <div class="panel-heading ds-flex align-center" style="margin-bottom: 0px;">
+            <div class="caption-text">
+              <h3>Logs</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <table class="table panel-table  table-bordered sp-portal-custom-table margintop-30">
+              <thead>
+                <tr>
+                  <th>Message</th>
+                  <th>Source</th>
+                  <th>Data & Time</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let deviceLog of deviceLogs | paginate: configDataGrid;">
+                <tr>
+                  <td>{{deviceLog.message}}</td>
+                  <td>{{deviceLog.source}}</td>
+                  <td>{{deviceLog.timestamp | date:'MM-dd-yyyy'}} {{deviceLog.timestamp | date:'HH:mm:ss'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row pagination-section" style="width: 100%;" *ngIf="deviceLogs && configDataGrid.totalItems > 0">
+            <div class="col-md-6">
+              <p>showing {{(configDataGrid.currentPage * 10)-9}} to {{(configDataGrid.currentPage * 10)-
+                (10-noOfElements)}} of
+                {{configDataGrid.totalItems ? configDataGrid.totalItems : null}} entries</p>
+            </div>
+            <div class="col-md-6">
+              <pagination-controls (pageChange)="pageChange($event)" class="my-pagination" id="dataGridPagination">
+              </pagination-controls>
+            </div>
+          </div>
+        </div>
+
+        <div id="faults" class="tab-pane fade margin-left-15px" >
+          <div class="panel-heading ds-flex align-center" style="margin-bottom: 0px;">
+            <div class="caption-text">
+              <h4>Fault Details</h4>
+            </div>
+          </div>
+          <div class="panel-body">
+            <table class="table panel-table  table-bordered sp-portal-custom-table margintop-30">
+              <thead>
+                <tr>
+                  <th>Message</th>
+                  <th>Source</th>
+                  <th>Data & Time</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let deviceFault of deviceFaults | paginate: faultsConfigDataGrid;">
+                <tr>
+                  <td>{{deviceFault.message}}</td>
+                  <td>{{deviceFault.source}}</td>
+                  <td>{{deviceFault.timestamp | date:'MM-dd-yyyy'}} {{deviceFault.timestamp | date:'HH:mm:ss'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="row pagination-section" style="width: 100%;"
+            *ngIf="deviceFaults && faultsConfigDataGrid.totalItems > 0">
+            <div class="col-md-6">
+              <p>showing {{(faultsConfigDataGrid.currentPage * 10)-9}} to {{(faultsConfigDataGrid.currentPage * 10)-
+                (10-faultsNoOfElements)}} of
+                {{faultsConfigDataGrid.totalItems ? faultsConfigDataGrid.totalItems : null}} entries</p>
+            </div>
+            <div class="col-md-6">
+              <pagination-controls (pageChange)="faultsPageChange($event)" class="my-pagination"
+                id="faultsDataGridPagination"></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

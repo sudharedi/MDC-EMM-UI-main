@@ -1,0 +1,47 @@
+<div class="">
+    <div class="app-packages-card">
+        <div class="app-packages-left-content">
+            <div class="app-packages-left-inner" *ngIf="packageColumn">
+              <h5>Package Name</h5>
+              <p>{{packagesData.packageName}}</p>
+            </div>
+            <div class="app-packages-left-inner" *ngIf="versionColumn">
+                <h5>Version</h5>
+                <p>{{packagesData.packageVersion}}</p>
+              </div>
+            <div class="app-packages-left-inner">
+              <h5>Release Date</h5>
+              <p>{{packagesData.dateOfRelease}}</p>
+            </div>
+            <div class="app-packages-left-inner" *ngIf="sizeColumn">
+                <h5>Size</h5>
+                <p>{{packagesData?.fileSize ? packagesData.fileSize : 'NA'}}</p>
+              </div>
+            <div class="app-packages-left-inner">
+              <h5>Update Status </h5>
+              <p class="color-green" [ngClass]="{'color-red': packagesData.status == 'Failed', 'color-orange' : packagesData.status == 'In_progress' }">{{packagesData.status}}</p>
+            </div>
+        </div>
+        <div class="app-packages-img-text" (click)="onSelectReleaseNotes(packagesData)">
+          <img src="../../assets/images/release.svg" alt="icon">
+          <p class="font-regular">Release Notes</p>
+        </div>
+        <div class="app-packages-img-text"  *ngIf="packagesData.status == 'NA' && userRoles?.SOTA?.allowed">
+          <img src="../../assets/images/install.svg" alt="icon" (click)="onSelectApp(packagesData)" >
+          <p class="color-blue">Install</p>
+        </div>
+        <div class="app-packages-img-text" *ngIf="packagesData.status == 'Completed' && !packagesData.systemPackage &&  userRoles?.SOTA?.allowed && packagesData.operation !== 'erase' ">
+            <img src="../../assets/images/uninstall.svg" alt="icon" (click)="onUnInstallApp(packagesData)">
+            <p>Un Install</p>
+        </div>
+        <div class="app-packages-img-text"  *ngIf="packagesData.status == 'Failed' && userRoles?.SOTA?.allowed">
+            <img src="../../assets/images/re-install.svg" alt="icon" (click)="onReInstall(packagesData)">
+            <p class="color-red">Re-Install</p>
+        </div>
+        <div class="app-packages-img-text" *ngIf="(packagesData.status == 'Failed' ||  packagesData.status == 'In_progress') && userRoles?.SOTA?.allowed">
+            <img src="../../assets/images/cancel.svg" alt="icon" (click)="onCancel(packagesData)">
+            <p>Cancel</p>
+        </div>
+
+      </div>
+</div>
